@@ -1,103 +1,117 @@
-import Image from "next/image";
+'use client';
+
+import Image from 'next/image';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import FadeInSection from '../components/FadeInSection';
+import TeamMember from '../components/TeamMember';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const logoRef = useRef(null);
+  const { scrollY } = useScroll();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+  const scale = useTransform(scrollY, [0, 300], [1, 0.6]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.3]);
+
+  const teamMembers = [
+    {
+      name: 'Simeon Maman',
+      role: 'CEO & Founder',
+      linkedin: 'https://www.linkedin.com/in/simeon-maman-8349b62a9/',
+      email: 'simeon@cirrica.com',
+    },
+    {
+      name: 'Anthony Kercher',
+      role: 'CTO & Co-founder',
+      linkedin: 'https://linkedin.com/in/anthonykercher/',
+      email: 'anthony@cirrica.com',
+    },
+    {
+      name: 'George Paraskuvopoulus',
+      role: 'COO & Co-founder',
+      linkedin: 'https://www.linkedin.com/in/george-paraskevopoulos-00b233369/',
+      email: 'george@cirrica.com',
+    },
+  ];
+
+  return (
+    <div className='scroll-smooth font-[family-name:var(--font-geist-sans)] bg-black text-white'>
+      {/* Hero Section */}
+      <section
+        ref={logoRef}
+        className='min-h-screen flex flex-col justify-center items-center gap-12 transition-colors duration-700'
+      >
+        <motion.div style={{ scale, opacity }}>
+          <Image
+            className='invert transition duration-700'
+            src='/clearMainLogoCirrica.png'
+            alt='Cirrica Logo'
+            width={720}
+            height={152}
+            priority
+          />
+        </motion.div>
+        <div className='animate-bounce mt-10'>
+          <a href='#about' aria-label='Scroll to About'>
+            <svg
+              className='w-8 h-8'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth={2}
+              viewBox='0 0 24 24'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M19 9l-7 7-7-7'
+              />
+            </svg>
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </section>
+      {/* About me Section */}
+      <FadeInSection id='about' className='bg-black text-white'>
+        <h2 className='text-4xl font-semibold mb-4'>About Us</h2>
+        <p>we are very cool guys</p>
+      </FadeInSection>
+      {/* Founders Section */}
+      <FadeInSection id='founders' className='bg-black text-white'>
+        <h2 className='text-4xl font-semibold mb-4'>Meet the Founders</h2>
+        <ul className='flex flex-col sm:flex-row gap-8 justify-center items-stretch w-full max-w-4xl'>
+          {teamMembers.map((member) => (
+            <TeamMember key={member.email} {...member} />
+          ))}
+        </ul>
+      </FadeInSection>
+      Contact Section
+      {/* <FadeInSection id='contact' className='bg-[#111] text-white'>
+        <h2 className='text-4xl font-semibold'>Contact Us</h2>
+        <p className='text-lg text-gray-300'>
+          We're here to help. Reach out anytime.
+        </p>
+        <form className='flex flex-col gap-4 w-full max-w-md'>
+          <input
+            type='text'
+            placeholder='Your Name'
+            className='p-3 border border-gray-700 rounded-lg bg-black text-white placeholder-gray-400'
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          <input
+            type='email'
+            placeholder='Your Email'
+            className='p-3 border border-gray-700 rounded-lg bg-black text-white placeholder-gray-400'
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <textarea
+            placeholder='Your Message'
+            className='p-3 border border-gray-700 rounded-lg h-32 resize-none bg-black text-white placeholder-gray-400'
+          ></textarea>
+          <button
+            type='submit'
+            className='bg-white text-black px-4 py-3 rounded-lg hover:bg-gray-300 transition'
+          >
+            Send Message
+          </button>
+        </form>
+      </FadeInSection> */}
     </div>
   );
 }
