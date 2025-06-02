@@ -121,6 +121,59 @@ export default function Home() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Contact form modal state
+  const [contactOpen, setContactOpen] = useState(false);
+  // Contact form data state
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+  // Loading state for form submission
+  const [contactLoading, setContactLoading] = useState(false);
+
+  // Handle contact form input changes
+  function handleContactChange(e) {
+    const { name, value } = e.target;
+    setContactForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  // Handle contact form submit (Web3Forms integration)
+  async function handleContactSubmit(e) {
+    e.preventDefault();
+    setContactLoading(true);
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: '582b130b-3231-4d3e-8960-cea416ee027b',
+          name: contactForm.name,
+          email: contactForm.email,
+          message: contactForm.message,
+          subject: 'New Submission from Cirrica',
+          botcheck: '',
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert('Thank you for your message!');
+        setContactForm({ name: '', email: '', message: '' });
+        setContactOpen(false);
+      } else {
+        alert('Something went wrong. Please try again later.');
+        console.error(data);
+      }
+    } catch (err) {
+      alert('Something went wrong. Please try again later.');
+      console.error(err);
+    } finally {
+      setContactLoading(false);
+    }
+  }
+
   return (
     <div className='scroll-smooth font-[family-name:var(--font-geist-sans)]   text-white'>
       {/* Animated background gradient */}
@@ -480,21 +533,116 @@ export default function Home() {
           ))}
         </ul>
       </FadeInSection>
+      {/* Contact Me Button (fixed bottom right) */}
+      <button
+        onClick={() => setContactOpen(true)}
+        className='fixed bottom-8 right-8 z-[1000] bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-black font-bold px-5 py-3 rounded-full shadow-lg hover:opacity-90 transition focus:outline-none focus:ring-2 focus:ring-[#daa56a] focus:ring-offset-2'
+        style={{ boxShadow: '0 4px 24px #0006' }}
+        aria-label='Open Contact Form'
+      >
+        Contact Me
+      </button>
       {/* Page transition fade (for future navigation) */}
       <AnimatePresence>
-        <motion.div
-          key='page-fade'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7 }}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            pointerEvents: 'none',
-            zIndex: 999,
-          }}
-        />
+        {contactOpen && (
+          <motion.div
+            key='page-fade'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7 }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              pointerEvents: 'auto',
+              zIndex: 999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(10,10,12,0.92)',
+            }}
+          >
+            {/* Simple Contact Me Form */}
+            <form
+              className='bg-[#18171b] border border-[#daa56a]/30 rounded-2xl shadow-xl p-8 flex flex-col gap-4 min-w-[320px] max-w-xs w-full relative'
+              style={{ boxShadow: '0 8px 32px #0008' }}
+              onSubmit={handleContactSubmit}
+            >
+              {/* Honeypot fields for spam prevention */}
+              <input
+                type='hidden'
+                name='subject'
+                value='New Submission from Cirrica'
+              />
+              <input
+                type='text'
+                name='botcheck'
+                className='hidden'
+                style={{ display: 'none' }}
+                tabIndex='-1'
+                autoComplete='off'
+              />
+              <button
+                type='button'
+                onClick={() => setContactOpen(false)}
+                className='absolute top-3 right-3 text-[#daa56a] hover:text-[#fadabd] text-2xl font-bold bg-transparent border-none outline-none cursor-pointer'
+                aria-label='Close Contact Form'
+              >
+                ×
+              </button>
+              <h3
+                className='text-xl font-bold mb-2 text-center'
+                style={{
+                  background:
+                    'linear-gradient(to right, #daa56a 0%, #fadabd 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                }}
+              >
+                Contact Me
+              </h3>
+              <input
+                type='text'
+                name='name'
+                placeholder='Your Name'
+                className='rounded-md px-3 py-2 bg-[#232228] text-white border border-[#daa56a]/20 focus:border-[#daa56a] outline-none transition'
+                required
+                value={contactForm.name}
+                onChange={handleContactChange}
+                disabled={contactLoading}
+              />
+              <input
+                type='email'
+                name='email'
+                placeholder='Your Email'
+                className='rounded-md px-3 py-2 bg-[#232228] text-white border border-[#daa56a]/20 focus:border-[#daa56a] outline-none transition'
+                required
+                value={contactForm.email}
+                onChange={handleContactChange}
+                disabled={contactLoading}
+              />
+              <textarea
+                name='message'
+                placeholder='Your Message'
+                rows={4}
+                className='rounded-md px-3 py-2 bg-[#232228] text-white border border-[#daa56a]/20 focus:border-[#daa56a] outline-none transition resize-none'
+                required
+                value={contactForm.message}
+                onChange={handleContactChange}
+                disabled={contactLoading}
+              />
+              <button
+                type='submit'
+                className='mt-2 py-2 rounded-md font-bold bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-black hover:opacity-90 transition flex items-center justify-center'
+                disabled={contactLoading}
+              >
+                {contactLoading ? 'Sending...' : 'Send'}
+              </button>
+            </form>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
