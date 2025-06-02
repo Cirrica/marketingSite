@@ -27,8 +27,8 @@ export default function HeroSection({
           className='flex flex-col items-center gap-6'
         >
           <Image
-            className='invert transition duration-700'
-            src='/clearMainLogoCirrica.png'
+            className='transition duration-700'
+            src='/clearMainLogo.png'
             alt='Cirrica Logo'
             width={1080}
             height={228}
