@@ -25,7 +25,7 @@ export default function ContactButton({ onClick, isSharing }) {
       transition={{
         type: 'spring',
         stiffness: 200,
-        damping: 20,
+        damping: 20.0,
       }}
     >
       <Image src='/share.svg' alt='Share' width={24} height={24} />
