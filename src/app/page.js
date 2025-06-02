@@ -83,7 +83,6 @@ export default function Home() {
           ))}
         </ul>
       </FadeInSection>
-      Contact Section
       {/* <FadeInSection id='contact' className='bg-[#111] text-white'>
         <h2 className='text-4xl font-semibold'>Contact Us</h2>
         <p className='text-lg text-gray-300'>
