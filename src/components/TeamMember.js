@@ -1,17 +1,23 @@
 'use client';
 
-export default function TeamMember({ firstName, lastName, role, linkedin, email }) {
+export default function TeamMember({
+  firstName,
+  lastName,
+  role,
+  linkedin,
+  email,
+}) {
   return (
     <li className='flex flex-col items-center bg-[#1a1510]/60 rounded-2xl shadow-lg p-6 border border-[#daa56a]/20 transition hover:scale-[1.03] hover:shadow-2xl w-full min-w-[220px]'>
       <div className='mb-4'>
-        <div className="relative w-20 h-20 flex items-center justify-center">
+        <div className='relative w-20 h-20 flex items-center justify-center'>
           {/* Soft blurred gradient glow */}
-          <span className="absolute inset-0 rounded-full bg-gradient-to-br from-[#fadabd] via-[#daa56a] to-[#b97a2a] blur-xl opacity-40"></span>
+          <span className='absolute inset-0 rounded-full bg-gradient-to-br from-[#fadabd] via-[#daa56a] to-[#b97a2a] blur-xl opacity-40'></span>
           {/* Main avatar circle with subtle border */}
-          <span className="relative w-20 h-20 rounded-full bg-[#18120a] flex items-center justify-center border-2 border-[#daa56a]/40 shadow-lg">
+          <span className='relative w-20 h-20 rounded-full bg-[#18120a] flex items-center justify-center border-2 border-[#daa56a]/40 shadow-lg'>
             {/* Outlined initials */}
             <span
-              className="text-3xl font-extrabold"
+              className='text-3xl font-extrabold'
               style={{
                 WebkitTextStroke: '2px #daa56a',
                 color: 'transparent',
