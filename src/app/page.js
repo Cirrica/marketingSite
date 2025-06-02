@@ -540,7 +540,7 @@ export default function Home() {
         style={{ boxShadow: '0 4px 24px #0006' }}
         aria-label='Open Contact Form'
       >
-        Contact Me
+        Contact Us
       </button>
       {/* Page transition fade (for future navigation) */}
       <AnimatePresence>
@@ -561,12 +561,14 @@ export default function Home() {
               justifyContent: 'center',
               background: 'rgba(10,10,12,0.92)',
             }}
+            onClick={() => setContactOpen(false)} // Close modal on backdrop click
           >
-            {/* Simple Contact Me Form */}
+            {/* Prevent closing when clicking inside the form */}
             <form
               className='bg-[#18171b] border border-[#daa56a]/30 rounded-2xl shadow-xl p-8 flex flex-col gap-4 min-w-[320px] max-w-xs w-full relative'
               style={{ boxShadow: '0 8px 32px #0008' }}
               onSubmit={handleContactSubmit}
+              onClick={(e) => e.stopPropagation()} // Prevent modal close on form click
             >
               {/* Honeypot fields for spam prevention */}
               <input
@@ -601,7 +603,7 @@ export default function Home() {
                   color: 'transparent',
                 }}
               >
-                Contact Me
+                Contact Us
               </h3>
               <input
                 type='text'
