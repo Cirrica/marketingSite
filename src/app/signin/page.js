@@ -95,15 +95,6 @@ export default function SignIn() {
   const iconSize = 36.8; // px, for centering (was 32, +15%)
   const center = 128.8; // px, half of w-64/h-64 (was 112, +15%)
 
-  // Increase to 10 particles, each with unique random params
-  const NUM_PARTICLES = 10;
-  const iconConfigs = Array.from({ length: NUM_PARTICLES }, (_, i) => ({
-    Icon: i % 2 === 0 ? DollarBill : Coin,
-    baseAngle: (2 * Math.PI * i) / NUM_PARTICLES,
-    // Each gets a unique random seed for movement
-    seed: Math.random() * 1000 + i * 100,
-  }));
-
   // Animate a shared time value for perpetual, non-repeating movement
   const time = useMotionValue(0);
   useAnimationFrame((t) => {
@@ -111,17 +102,19 @@ export default function SignIn() {
   });
 
   // Precompute transforms for each icon, with unique, slow, smooth, random wandering (no pulse)
-  const iconTransforms = iconConfigs.map(({ baseAngle, seed }, i) => {
-    // Use time for smooth, perpetual wandering
-    // Layered sine/cosine for pseudo-random, non-repeating movement
+  // FIX: Hooks must be called at the top level, not inside .map()
+  const iconTransforms = [];
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    const baseAngle = (2 * Math.PI * i) / PARTICLE_COUNT;
+    const seed = Math.random() * 1000 + i * 100;
     const wanderAngle = useTransform(
       time,
       (t) =>
         baseAngle +
-        0.9 * Math.sin(t * 0.11 + seed) + // smoother, slower
+        0.9 * Math.sin(t * 0.11 + seed) +
         0.7 * Math.cos(t * 0.13 + seed * 1.3) +
         0.5 * Math.sin(t * 0.09 + seed * 2.1) +
-        t * 0.07 // slower global spin
+        t * 0.07
     );
     const wanderRadius = useTransform(
       time,
@@ -130,7 +123,6 @@ export default function SignIn() {
         22 * Math.sin(t * 0.09 + seed * 0.7) +
         16 * Math.cos(t * 0.06 + seed * 1.9) +
         10 * Math.sin(t * 0.13 + seed * 2.7)
-      // No pulse sync
     );
     const left = useTransform(
       [wanderAngle, wanderRadius],
@@ -140,8 +132,8 @@ export default function SignIn() {
       [wanderAngle, wanderRadius],
       ([ang, r]) => center + r * Math.sin(ang) - iconSize / 2
     );
-    return { left, top };
-  });
+    iconTransforms.push({ left, top });
+  }
 
   // Random Money Particles Component
   function RandomMoneyParticles() {
