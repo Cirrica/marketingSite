@@ -21,6 +21,190 @@ import {
   useTransform,
 } from 'framer-motion';
 
+// SVG icons for money and stocks (move outside SignIn to avoid re-creation)
+export const DollarBill = () => (
+  <svg
+    width='20'
+    height='12'
+    viewBox='0 0 20 12'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <rect
+      x='1'
+      y='1'
+      width='18'
+      height='10'
+      rx='2'
+      fill='#fadabd'
+      stroke='#daa56a'
+      strokeWidth='1.5'
+    />
+    <circle cx='10' cy='6' r='2' fill='#daa56a' />
+  </svg>
+);
+export const Coin = () => (
+  <svg
+    width='14'
+    height='14'
+    viewBox='0 0 14 14'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <circle
+      cx='7'
+      cy='7'
+      r='6'
+      fill='#daa56a'
+      stroke='#fadabd'
+      strokeWidth='1.5'
+    />
+    <text
+      x='7'
+      y='10'
+      textAnchor='middle'
+      fontSize='7'
+      fill='#0a0a0c'
+      fontWeight='bold'
+    >
+      ¢
+    </text>
+  </svg>
+);
+export const ICONS = [DollarBill, Coin];
+
+// Random Money Particles Component (move outside SignIn for stability)
+export function RandomMoneyParticles() {
+  const containerRef = React.useRef(null);
+  const NUM_PARTICLES = PARTICLE_COUNT;
+  // Generate all random values once for SSR/CSR consistency
+  const initialParticles = React.useMemo(() => {
+    // Use a seeded PRNG for deterministic SSR/CSR
+    function mulberry32(seed) {
+      return function () {
+        let t = (seed += 0x6d2b79f5);
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    const rand = mulberry32(123456); // fixed seed for hydration match
+    return Array.from({ length: NUM_PARTICLES }, (_, i) => {
+      const Icon = ICONS[i % ICONS.length];
+      return {
+        id: i,
+        Icon,
+        x: 50,
+        y: 50,
+        dx: (rand() - 0.5) * 0.09, // slightly faster
+        dy: (rand() - 0.5) * 0.09, // slightly faster
+        size: 43.7 + rand() * 11.5,
+        color: i % 2 === 0 ? '#daa56a' : '#fadabd',
+        targetX: rand() * (100 - 2 * 12) + 12,
+        targetY: rand() * (100 - 2 * 12) + 12,
+        progress: 0,
+      };
+    });
+  }, []);
+  const [particles, setParticles] = React.useState(initialParticles);
+
+  // Helper to keep particles apart (simple repulsion)
+  function applyRepulsion(ps) {
+    const minDist = PARTICLE_MIN_DIST;
+    const strength = PARTICLE_REPULSION_STRENGTH;
+    return ps.map((p, i) => {
+      let dxTotal = 0,
+        dyTotal = 0;
+      ps.forEach((other, j) => {
+        if (i === j) return;
+        const dx = (p.x - other.x) * 2;
+        const dy = (p.y - other.y) * 2;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < minDist && dist > 0.01) {
+          const force = (minDist - dist) * strength;
+          dxTotal += (dx / dist) * force;
+          dyTotal += (dy / dist) * force;
+        }
+      });
+      return { ...p, dx: p.dx + dxTotal, dy: p.dy + dyTotal };
+    });
+  }
+
+  // Animate the particles
+  React.useEffect(() => {
+    let raf;
+    let lastTime = performance.now();
+    const interval = 1000 / PARTICLE_FPS;
+    function animate(now) {
+      if (now - lastTime >= interval) {
+        setParticles((prev) => {
+          let next = applyRepulsion(prev);
+          return next.map((p) => {
+            let { x, y, dx, dy, size, targetX, targetY, progress } = p;
+            const marginPercent = PARTICLE_MARGIN;
+            // Outward animation: ease out for first 1.2s
+            if (progress < 1) {
+              const newProgress = Math.min(
+                progress + PARTICLE_OUTWARD_EASE_STEP,
+                1
+              ); // slower ease for smoother start
+              const ease = 1 - Math.pow(1 - newProgress, 2); // easeOutQuad
+              x =
+                x + (50 + (targetX - 50) * ease - x) * PARTICLE_OUTWARD_LERP; // smaller increments
+              y =
+                y + (50 + (targetY - 50) * ease - y) * PARTICLE_OUTWARD_LERP;
+              return { ...p, x, y, progress: newProgress };
+            }
+            if (x + dx > 100 - marginPercent || x + dx < marginPercent)
+              dx = -dx * 0.7;
+            if (y + dy > 100 - marginPercent || y + dy < marginPercent)
+              dy = -dy * 0.7;
+            dx += (Math.random() - 0.5) * PARTICLE_RANDOM_STEP; // smaller random increments
+            dy += (Math.random() - 0.5) * PARTICLE_RANDOM_STEP;
+            dx = Math.max(-PARTICLE_MOVE_LIMIT, Math.min(PARTICLE_MOVE_LIMIT, dx));
+            dy = Math.max(-PARTICLE_MOVE_LIMIT, Math.min(PARTICLE_MOVE_LIMIT, dy));
+            x = x + dx * PARTICLE_DAMPING;
+            y = y + dy * PARTICLE_DAMPING;
+            x = Math.max(marginPercent, Math.min(100 - marginPercent, x));
+            y = Math.max(marginPercent, Math.min(100 - marginPercent, y));
+            return { ...p, x, y, dx, dy, progress: 1 };
+          });
+        });
+        lastTime = now;
+      }
+      raf = requestAnimationFrame(animate);
+    }
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className='absolute inset-0 w-full h-full pointer-events-none'
+    >
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          style={{
+            position: 'absolute',
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: p.size,
+            height: p.size,
+            filter: `drop-shadow(0 0 18px ${p.color}88) drop-shadow(0 0 36px ${p.color}44)`,
+            transition: 'filter 0.2s',
+            zIndex: 2,
+            pointerEvents: 'none',
+          }}
+        >
+          <p.Icon />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,57 +222,6 @@ export default function SignIn() {
     }, 1200);
   };
 
-  // SVG icons for money and stocks
-  const DollarBill = () => (
-    <svg
-      width='20'
-      height='12'
-      viewBox='0 0 20 12'
-      fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-    >
-      <rect
-        x='1'
-        y='1'
-        width='18'
-        height='10'
-        rx='2'
-        fill='#fadabd'
-        stroke='#daa56a'
-        strokeWidth='1.5'
-      />
-      <circle cx='10' cy='6' r='2' fill='#daa56a' />
-    </svg>
-  );
-  const Coin = () => (
-    <svg
-      width='14'
-      height='14'
-      viewBox='0 0 14 14'
-      fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-    >
-      <circle
-        cx='7'
-        cy='7'
-        r='6'
-        fill='#daa56a'
-        stroke='#fadabd'
-        strokeWidth='1.5'
-      />
-      <text
-        x='7'
-        y='10'
-        textAnchor='middle'
-        fontSize='7'
-        fill='#0a0a0c'
-        fontWeight='bold'
-      >
-        ¢
-      </text>
-    </svg>
-  );
-
   // --- Animated Dust Particle Money Icons ---
   // Orbit config (must be above iconConfigs and iconTransforms)
   const orbitRadius = 126; // px, adjust for your layout (was 110, +15%)
@@ -101,178 +234,33 @@ export default function SignIn() {
     time.set(t / 1000); // seconds
   });
 
-  // Precompute transforms for each icon, with unique, slow, smooth, random wandering (no pulse)
-  // FIX: Hooks must be called at the top level, not inside .map()
-  const iconTransforms = [];
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    const baseAngle = (2 * Math.PI * i) / PARTICLE_COUNT;
-    const seed = Math.random() * 1000 + i * 100;
-    const wanderAngle = useTransform(
-      time,
-      (t) =>
+  // Calculate icon positions directly in render (no hooks in loops)
+  function getIconTransforms() {
+    const t = time.get();
+    const transforms = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const baseAngle = (2 * Math.PI * i) / PARTICLE_COUNT;
+      const seed = i * 100; // deterministic for SSR/CSR
+      const wanderAngle =
         baseAngle +
         0.9 * Math.sin(t * 0.11 + seed) +
         0.7 * Math.cos(t * 0.13 + seed * 1.3) +
         0.5 * Math.sin(t * 0.09 + seed * 2.1) +
-        t * 0.07
-    );
-    const wanderRadius = useTransform(
-      time,
-      (t) =>
+        t * 0.07;
+      const wanderRadius =
         orbitRadius +
         22 * Math.sin(t * 0.09 + seed * 0.7) +
         16 * Math.cos(t * 0.06 + seed * 1.9) +
-        10 * Math.sin(t * 0.13 + seed * 2.7)
-    );
-    const left = useTransform(
-      [wanderAngle, wanderRadius],
-      ([ang, r]) => center + r * Math.cos(ang) - iconSize / 2
-    );
-    const top = useTransform(
-      [wanderAngle, wanderRadius],
-      ([ang, r]) => center + r * Math.sin(ang) - iconSize / 2
-    );
-    iconTransforms.push({ left, top });
-  }
-
-  // Random Money Particles Component
-  function RandomMoneyParticles() {
-    const containerRef = useRef(null);
-    const NUM_PARTICLES = 6; // Reduced for performance
-    const ICONS = [DollarBill, Coin];
-    // Generate all random values once for SSR/CSR consistency
-    const initialParticles = React.useMemo(() => {
-      // Use a seeded PRNG for deterministic SSR/CSR
-      function mulberry32(seed) {
-        return function () {
-          let t = (seed += 0x6d2b79f5);
-          t = Math.imul(t ^ (t >>> 15), t | 1);
-          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-        };
-      }
-      const rand = mulberry32(123456); // fixed seed for hydration match
-      return Array.from({ length: NUM_PARTICLES }, (_, i) => {
-        const Icon = ICONS[i % ICONS.length];
-        return {
-          id: i,
-          Icon,
-          x: 50,
-          y: 50,
-          dx: (rand() - 0.5) * 0.09, // slightly faster
-          dy: (rand() - 0.5) * 0.09, // slightly faster
-          size: 43.7 + rand() * 11.5,
-          color: i % 2 === 0 ? '#daa56a' : '#fadabd',
-          targetX: rand() * (100 - 2 * 12) + 12,
-          targetY: rand() * (100 - 2 * 12) + 12,
-          progress: 0,
-        };
-      });
-    }, []);
-    const [particles, setParticles] = React.useState(initialParticles);
-
-    // Helper to keep particles apart (simple repulsion)
-    function applyRepulsion(ps) {
-      const minDist = PARTICLE_MIN_DIST; // Increased for less frequent repulsion
-      const strength = PARTICLE_REPULSION_STRENGTH; // Lowered for smoother, less jittery effect
-      return ps.map((p, i) => {
-        let dxTotal = 0,
-          dyTotal = 0;
-        ps.forEach((other, j) => {
-          if (i === j) return;
-          const dx = (p.x - other.x) * 2;
-          const dy = (p.y - other.y) * 2;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < minDist && dist > 0.01) {
-            const force = (minDist - dist) * strength;
-            dxTotal += (dx / dist) * force;
-            dyTotal += (dy / dist) * force;
-          }
-        });
-        return { ...p, dx: p.dx + dxTotal, dy: p.dy + dyTotal };
-      });
+        10 * Math.sin(t * 0.13 + seed * 2.7);
+      const left = center + wanderRadius * Math.cos(wanderAngle) - iconSize / 2;
+      const top = center + wanderRadius * Math.sin(wanderAngle) - iconSize / 2;
+      transforms.push({ left, top });
     }
-
-    // Animate the particles
-    useEffect(() => {
-      let raf;
-      let lastTime = performance.now();
-      const interval = 1000 / PARTICLE_FPS; // 60fps target
-      function animate(now) {
-        if (now - lastTime >= interval) {
-          setParticles((prev) => {
-            let next = applyRepulsion(prev);
-            return next.map((p) => {
-              let { x, y, dx, dy, size, targetX, targetY, progress } = p;
-              const marginPercent = PARTICLE_MARGIN;
-              // Outward animation: ease out for first 1.2s
-              if (progress < 1) {
-                const newProgress = Math.min(
-                  progress + PARTICLE_OUTWARD_EASE_STEP,
-                  1
-                ); // slower ease for smoother start
-                const ease = 1 - Math.pow(1 - newProgress, 2); // easeOutQuad
-                x =
-                  x + (50 + (targetX - 50) * ease - x) * PARTICLE_OUTWARD_LERP; // smaller increments
-                y =
-                  y + (50 + (targetY - 50) * ease - y) * PARTICLE_OUTWARD_LERP;
-                return { ...p, x, y, progress: newProgress };
-              }
-              if (x + dx > 100 - marginPercent || x + dx < marginPercent)
-                dx = -dx * 0.7;
-              if (y + dy > 100 - marginPercent || y + dy < marginPercent)
-                dy = -dy * 0.7;
-              dx += (Math.random() - 0.5) * PARTICLE_RANDOM_STEP; // smaller random increments
-              dy += (Math.random() - 0.5) * PARTICLE_RANDOM_STEP;
-              dx = Math.max(
-                -PARTICLE_MOVE_LIMIT,
-                Math.min(PARTICLE_MOVE_LIMIT, dx)
-              ); // move less each time
-              dy = Math.max(
-                -PARTICLE_MOVE_LIMIT,
-                Math.min(PARTICLE_MOVE_LIMIT, dy)
-              );
-              x = x + dx * PARTICLE_DAMPING;
-              y = y + dy * PARTICLE_DAMPING;
-              x = Math.max(marginPercent, Math.min(100 - marginPercent, x));
-              y = Math.max(marginPercent, Math.min(100 - marginPercent, y));
-              return { ...p, x, y, dx, dy, progress: 1 };
-            });
-          });
-          lastTime = now;
-        }
-        raf = requestAnimationFrame(animate);
-      }
-      raf = requestAnimationFrame(animate);
-      return () => cancelAnimationFrame(raf);
-    }, []);
-
-    return (
-      <div
-        ref={containerRef}
-        className='absolute inset-0 w-full h-full pointer-events-none'
-      >
-        {particles.map((p) => (
-          <div
-            key={p.id}
-            style={{
-              position: 'absolute',
-              left: `${p.x}%`,
-              top: `${p.y}%`,
-              width: p.size,
-              height: p.size,
-              filter: `drop-shadow(0 0 18px ${p.color}88) drop-shadow(0 0 36px ${p.color}44)`,
-              transition: 'filter 0.2s',
-              zIndex: 2,
-              pointerEvents: 'none',
-            }}
-          >
-            <p.Icon />
-          </div>
-        ))}
-      </div>
-    );
+    return transforms;
   }
+
+  // Precompute transforms for each icon, with unique, slow, smooth, random wandering (no pulse)
+  const iconTransforms = getIconTransforms();
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-[#050506] to-[#0a0a0c] px-4'>
