@@ -1,6 +1,6 @@
 {
-  "name": "interim",
-  "version": "0.1.0",
+  "name": "@cirrica/marketingsite-dev",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
