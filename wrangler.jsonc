@@ -11,7 +11,7 @@
   },
   "env": {
     "dev": {
-      "name": "marketingsite-dev",
+      "name": "marketingsite",
       "route": "dev.cirrica.com/*",           // your dev custom domain
       "account_id": "18358d5ce6e44f812b59e3132b28d2a3",
       "workers_dev": false                     // false means using your custom domain route
