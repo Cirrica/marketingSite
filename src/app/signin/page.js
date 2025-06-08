@@ -20,6 +20,7 @@ import {
   useAnimationFrame,
   useTransform,
 } from 'framer-motion';
+import AnimatedMoneyParticles from '../../components/AnimatedMoneyParticles';
 
 // SVG icons for money and stocks (move outside SignIn to avoid re-creation)
 export const DollarBill = () => (
@@ -289,19 +290,23 @@ export default function SignIn() {
             initial={{ scale: 1.035, opacity: 0 }}
             animate={{ scale: 1.15, opacity: 1 }}
             transition={{ duration: 1 }}
-            className='relative w-full h-full min-h-[36.8rem] flex items-center justify-center' // +15% min-h
+            className='relative w-full h-full min-h-[36.8rem] flex items-center justify-center'
           >
             {/* Pulsing Halo */}
             <motion.div
-              className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[294px] h-[294px] rounded-full bg-gradient-to-br from-[#daa56a]/30 to-[#fadabd]/20 blur-2xl opacity-70 z-0' // +15% w/h
+              className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[294px] h-[294px] rounded-full bg-gradient-to-br from-[#daa56a]/30 to-[#fadabd]/20 blur-2xl opacity-70 z-0'
               animate={{ scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
               transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
             />
-            {/* Animated Money Icons with random movement, contained in the left box */}
-            <RandomMoneyParticles />
+            <AnimatedMoneyParticles
+              count={6}
+              iconSize={36.8}
+              area={294}
+              zIndex={2}
+            />
             {/* Central logo with pulse and subtle ring */}
             <motion.div
-              className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[147px] h-[147px] rounded-full border-2 border-[#daa56a]/40 z-10' // +15% w/h
+              className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[147px] h-[147px] rounded-full border-2 border-[#daa56a]/40 z-10'
               animate={{ scale: [1, 1.04, 1], opacity: [0.8, 1, 0.8] }}
               transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
             />
