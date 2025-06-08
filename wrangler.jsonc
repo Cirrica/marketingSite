@@ -8,5 +8,19 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
+  },
+  "env": {
+    "dev": {
+      "name": "marketingsite-dev",
+      "route": "dev.cirrica.com/*",           // your dev custom domain
+      "account_id": "18358d5ce6e44f812b59e3132b28d2a3",
+      "workers_dev": false                     // false means using your custom domain route
+    },
+    "prod": {
+      "name": "marketingsite",
+      "route": "cirrica.com/*",                // your prod custom domain
+      "account_id": "18358d5ce6e44f812b59e3132b28d2a3",
+      "workers_dev": false
+    }
   }
 }
