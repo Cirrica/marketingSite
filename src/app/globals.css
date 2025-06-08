@@ -1,1 +1,35 @@
 @import 'tailwindcss';
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
+input[type='search'],
+input[type='tel'],
+input[type='url'],
+input:not([type]) {
+  background-color: #36302d !important;
+  color: #fff;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #36302d inset !important;
+  box-shadow: 0 0 0 1000px #36302d inset !important;
+  -webkit-text-fill-color: #fff !important;
+  color: #fff !important;
+  caret-color: #fff !important;
+  border-radius: 0.375rem !important; /* match Tailwind rounded */
+}
+
+input:disabled {
+  background-color: #36302d !important;
+  opacity: 0.6;
+  color: #fff !important;
+}
+
+input {
+  background-image: none !important;
+}

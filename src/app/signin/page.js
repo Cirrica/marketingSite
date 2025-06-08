@@ -149,10 +149,8 @@ export function RandomMoneyParticles() {
                 1
               ); // slower ease for smoother start
               const ease = 1 - Math.pow(1 - newProgress, 2); // easeOutQuad
-              x =
-                x + (50 + (targetX - 50) * ease - x) * PARTICLE_OUTWARD_LERP; // smaller increments
-              y =
-                y + (50 + (targetY - 50) * ease - y) * PARTICLE_OUTWARD_LERP;
+              x = x + (50 + (targetX - 50) * ease - x) * PARTICLE_OUTWARD_LERP; // smaller increments
+              y = y + (50 + (targetY - 50) * ease - y) * PARTICLE_OUTWARD_LERP;
               return { ...p, x, y, progress: newProgress };
             }
             if (x + dx > 100 - marginPercent || x + dx < marginPercent)
@@ -161,8 +159,14 @@ export function RandomMoneyParticles() {
               dy = -dy * 0.7;
             dx += (Math.random() - 0.5) * PARTICLE_RANDOM_STEP; // smaller random increments
             dy += (Math.random() - 0.5) * PARTICLE_RANDOM_STEP;
-            dx = Math.max(-PARTICLE_MOVE_LIMIT, Math.min(PARTICLE_MOVE_LIMIT, dx));
-            dy = Math.max(-PARTICLE_MOVE_LIMIT, Math.min(PARTICLE_MOVE_LIMIT, dy));
+            dx = Math.max(
+              -PARTICLE_MOVE_LIMIT,
+              Math.min(PARTICLE_MOVE_LIMIT, dx)
+            );
+            dy = Math.max(
+              -PARTICLE_MOVE_LIMIT,
+              Math.min(PARTICLE_MOVE_LIMIT, dy)
+            );
             x = x + dx * PARTICLE_DAMPING;
             y = y + dy * PARTICLE_DAMPING;
             x = Math.max(marginPercent, Math.min(100 - marginPercent, x));
@@ -337,7 +341,7 @@ export default function SignIn() {
               </label>
               <input
                 type='email'
-                className='w-full px-4 py-2 rounded bg-[#18181b] text-white border border-[#daa56a]/30 focus:outline-none focus:ring-2 focus:ring-[#daa56a] transition'
+                className='w-full px-4 py-2 rounded text-white border border-[#daa56a]/30 focus:outline-none focus:ring-2 focus:ring-[#daa56a] transition bg-transparent'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -350,7 +354,7 @@ export default function SignIn() {
               </label>
               <input
                 type='password'
-                className='w-full px-4 py-2 rounded bg-[#18181b] text-white border border-[#daa56a]/30 focus:outline-none focus:ring-2 focus:ring-[#daa56a] transition'
+                className='w-full px-4 py-2 rounded text-white border border-[#daa56a]/30 focus:outline-none focus:ring-2 focus:ring-[#daa56a] transition bg-transparent'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -362,7 +366,7 @@ export default function SignIn() {
             )}
             <button
               type='submit'
-              className='w-full py-2 rounded bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-[#050506] font-semibold shadow hover:from-[#fadabd] hover:to-[#daa56a] transition'
+              className='w-full py-2 rounded bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-[#050506] font-semibold shadow hover:from-[#fadabd] hover:to-[#daa56a] transition cursor-pointer'
               disabled={loading}
             >
               {loading ? 'Signing in...' : 'Sign In'}
