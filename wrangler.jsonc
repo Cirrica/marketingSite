@@ -1,7 +1,7 @@
 {
+  "name": "marketingsite",
   "main": ".open-next/worker.js",
-  "name": "interim",
-  "compatibility_date": "2025-03-25",
+  "compatibility_date": "2025-06-07",
   "compatibility_flags": [
     "nodejs_compat"
   ],
