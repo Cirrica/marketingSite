@@ -1,26 +1,11 @@
 'use client';
 
-// Configurable animation variables
-const PARTICLE_COUNT = 6; // Number of animated icons
-const PARTICLE_FPS = 120; // Animation frames per second
-const PARTICLE_MIN_DIST = 60; // Minimum distance for repulsion
-const PARTICLE_REPULSION_STRENGTH = 0.012; // Repulsion force
-const PARTICLE_OUTWARD_EASE_STEP = 0.025; // Outward ease step
-const PARTICLE_OUTWARD_LERP = 0.22; // Outward lerp factor
-const PARTICLE_RANDOM_STEP = 0.0015; // Random movement increment
-const PARTICLE_MOVE_LIMIT = 0.045; // Max movement per frame
-const PARTICLE_DAMPING = 0.98 + 2; // Damping factor for velocity
-const PARTICLE_MARGIN = 12; // Margin percent for bounds
-
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import {
-  motion,
-  useMotionValue,
-  useAnimationFrame,
-  useTransform,
-} from 'framer-motion';
-import AnimatedMoneyParticles from '../../components/AnimatedMoneyParticles';
+
+// Removed all unused animation variables related to legacy particle system
+
+import AnimatedMoneyParticles from '@/components/AnimatedMoneyParticles';
 
 // SVG icons for money and stocks (move outside SignIn to avoid re-creation)
 export const DollarBill = () => (
@@ -74,141 +59,7 @@ export const Coin = () => (
 );
 export const ICONS = [DollarBill, Coin];
 
-// Random Money Particles Component (move outside SignIn for stability)
-export function RandomMoneyParticles() {
-  const containerRef = React.useRef(null);
-  const NUM_PARTICLES = PARTICLE_COUNT;
-  // Generate all random values once for SSR/CSR consistency
-  const initialParticles = React.useMemo(() => {
-    // Use a seeded PRNG for deterministic SSR/CSR
-    function mulberry32(seed) {
-      return function () {
-        let t = (seed += 0x6d2b79f5);
-        t = Math.imul(t ^ (t >>> 15), t | 1);
-        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-      };
-    }
-    const rand = mulberry32(123456); // fixed seed for hydration match
-    return Array.from({ length: NUM_PARTICLES }, (_, i) => {
-      const Icon = ICONS[i % ICONS.length];
-      return {
-        id: i,
-        Icon,
-        x: 50,
-        y: 50,
-        dx: (rand() - 0.5) * 0.09, // slightly faster
-        dy: (rand() - 0.5) * 0.09, // slightly faster
-        size: 43.7 + rand() * 11.5,
-        color: i % 2 === 0 ? '#daa56a' : '#fadabd',
-        targetX: rand() * (100 - 2 * 12) + 12,
-        targetY: rand() * (100 - 2 * 12) + 12,
-        progress: 0,
-      };
-    });
-  }, []);
-  const [particles, setParticles] = React.useState(initialParticles);
-
-  // Helper to keep particles apart (simple repulsion)
-  function applyRepulsion(ps) {
-    const minDist = PARTICLE_MIN_DIST;
-    const strength = PARTICLE_REPULSION_STRENGTH;
-    return ps.map((p, i) => {
-      let dxTotal = 0,
-        dyTotal = 0;
-      ps.forEach((other, j) => {
-        if (i === j) return;
-        const dx = (p.x - other.x) * 2;
-        const dy = (p.y - other.y) * 2;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < minDist && dist > 0.01) {
-          const force = (minDist - dist) * strength;
-          dxTotal += (dx / dist) * force;
-          dyTotal += (dy / dist) * force;
-        }
-      });
-      return { ...p, dx: p.dx + dxTotal, dy: p.dy + dyTotal };
-    });
-  }
-
-  // Animate the particles
-  React.useEffect(() => {
-    let raf;
-    let lastTime = performance.now();
-    const interval = 1000 / PARTICLE_FPS;
-    function animate(now) {
-      if (now - lastTime >= interval) {
-        setParticles((prev) => {
-          let next = applyRepulsion(prev);
-          return next.map((p) => {
-            let { x, y, dx, dy, size, targetX, targetY, progress } = p;
-            const marginPercent = PARTICLE_MARGIN;
-            // Outward animation: ease out for first 1.2s
-            if (progress < 1) {
-              const newProgress = Math.min(
-                progress + PARTICLE_OUTWARD_EASE_STEP,
-                1
-              ); // slower ease for smoother start
-              const ease = 1 - Math.pow(1 - newProgress, 2); // easeOutQuad
-              x = x + (50 + (targetX - 50) * ease - x) * PARTICLE_OUTWARD_LERP; // smaller increments
-              y = y + (50 + (targetY - 50) * ease - y) * PARTICLE_OUTWARD_LERP;
-              return { ...p, x, y, progress: newProgress };
-            }
-            if (x + dx > 100 - marginPercent || x + dx < marginPercent)
-              dx = -dx * 0.7;
-            if (y + dy > 100 - marginPercent || y + dy < marginPercent)
-              dy = -dy * 0.7;
-            dx += (Math.random() - 0.5) * PARTICLE_RANDOM_STEP; // smaller random increments
-            dy += (Math.random() - 0.5) * PARTICLE_RANDOM_STEP;
-            dx = Math.max(
-              -PARTICLE_MOVE_LIMIT,
-              Math.min(PARTICLE_MOVE_LIMIT, dx)
-            );
-            dy = Math.max(
-              -PARTICLE_MOVE_LIMIT,
-              Math.min(PARTICLE_MOVE_LIMIT, dy)
-            );
-            x = x + dx * PARTICLE_DAMPING;
-            y = y + dy * PARTICLE_DAMPING;
-            x = Math.max(marginPercent, Math.min(100 - marginPercent, x));
-            y = Math.max(marginPercent, Math.min(100 - marginPercent, y));
-            return { ...p, x, y, dx, dy, progress: 1 };
-          });
-        });
-        lastTime = now;
-      }
-      raf = requestAnimationFrame(animate);
-    }
-    raf = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  return (
-    <div
-      ref={containerRef}
-      className='absolute inset-0 w-full h-full pointer-events-none'
-    >
-      {particles.map((p) => (
-        <div
-          key={p.id}
-          style={{
-            position: 'absolute',
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: p.size,
-            height: p.size,
-            filter: `drop-shadow(0 0 18px ${p.color}88) drop-shadow(0 0 36px ${p.color}44)`,
-            transition: 'filter 0.2s',
-            zIndex: 2,
-            pointerEvents: 'none',
-          }}
-        >
-          <p.Icon />
-        </div>
-      ))}
-    </div>
-  );
-}
+// Remove old RandomMoneyParticles definition and usage
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -220,52 +71,22 @@ export default function SignIn() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    // Simulate sign in
-    setTimeout(() => {
-      setLoading(false);
-      setError('Invalid credentials (demo only)');
-    }, 1200);
-  };
-
-  // --- Animated Dust Particle Money Icons ---
-  // Orbit config (must be above iconConfigs and iconTransforms)
-  const orbitRadius = 126; // px, adjust for your layout (was 110, +15%)
-  const iconSize = 36.8; // px, for centering (was 32, +15%)
-  const center = 128.8; // px, half of w-64/h-64 (was 112, +15%)
-
-  // Animate a shared time value for perpetual, non-repeating movement
-  const time = useMotionValue(0);
-  useAnimationFrame((t) => {
-    time.set(t / 1000); // seconds
-  });
-
-  // Calculate icon positions directly in render (no hooks in loops)
-  function getIconTransforms() {
-    const t = time.get();
-    const transforms = [];
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const baseAngle = (2 * Math.PI * i) / PARTICLE_COUNT;
-      const seed = i * 100; // deterministic for SSR/CSR
-      const wanderAngle =
-        baseAngle +
-        0.9 * Math.sin(t * 0.11 + seed) +
-        0.7 * Math.cos(t * 0.13 + seed * 1.3) +
-        0.5 * Math.sin(t * 0.09 + seed * 2.1) +
-        t * 0.07;
-      const wanderRadius =
-        orbitRadius +
-        22 * Math.sin(t * 0.09 + seed * 0.7) +
-        16 * Math.cos(t * 0.06 + seed * 1.9) +
-        10 * Math.sin(t * 0.13 + seed * 2.7);
-      const left = center + wanderRadius * Math.cos(wanderAngle) - iconSize / 2;
-      const top = center + wanderRadius * Math.sin(wanderAngle) - iconSize / 2;
-      transforms.push({ left, top });
+    // Call backend signin
+    const response = await fetch('http://localhost:8080/user/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    setLoading(false);
+    if (!response.ok || !data.token) {
+      setError(data.error || 'Invalid credentials');
+      return;
     }
-    return transforms;
-  }
-
-  // Precompute transforms for each icon, with unique, slow, smooth, random wandering (no pulse)
-  const iconTransforms = getIconTransforms();
+    // Save JWT token for onboarding (always overwrite)
+    window.localStorage.setItem('cirricaToken', data.token);
+    window.location.href = '/onboarding';
+  };
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-[#050506] to-[#0a0a0c] px-4'>
@@ -286,50 +107,8 @@ export default function SignIn() {
             className='absolute inset-0 z-0 pointer-events-none blur-xl'
             style={{ filter: 'blur(32px)' }}
           />
-          <motion.div
-            initial={{ scale: 1.035, opacity: 0 }}
-            animate={{ scale: 1.15, opacity: 1 }}
-            transition={{ duration: 1 }}
-            className='relative w-full h-full min-h-[36.8rem] flex items-center justify-center'
-          >
-            {/* Pulsing Halo */}
-            <motion.div
-              className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[294px] h-[294px] rounded-full bg-gradient-to-br from-[#daa56a]/30 to-[#fadabd]/20 blur-2xl opacity-70 z-0'
-              animate={{ scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
-              transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-            />
-            <AnimatedMoneyParticles
-              count={6}
-              iconSize={36.8}
-              area={294}
-              zIndex={2}
-            />
-            {/* Central logo with pulse and subtle ring */}
-            <motion.div
-              className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[147px] h-[147px] rounded-full border-2 border-[#daa56a]/40 z-10'
-              animate={{ scale: [1, 1.04, 1], opacity: [0.8, 1, 0.8] }}
-              transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-            />
-            <motion.img
-              src='/clearCircleLogo.png'
-              alt='Cirrica Logo'
-              className='relative z-20 w-[147px] h-[147px] rounded-full aspect-square border-4 border-[#daa56a]/60 shadow-[0_0_32px_0px_rgba(218,165,106,0.18),0_0_64px_0px_rgba(250,218,189,0.12)] drop-shadow-lg'
-              style={{
-                objectFit: 'contain',
-                background: 'rgba(255,255,255,0.04)',
-                backdropFilter: 'blur(2px)',
-              }}
-              animate={{
-                scale: [1, 1.08, 1],
-                boxShadow: [
-                  '0 0 46px 12px #daa56a33',
-                  '0 0 69px 23px #fadabd33',
-                  '0 0 46px 12px #daa56a33',
-                ],
-              }}
-              transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-            />
-          </motion.div>
+          {/* Animated Cirrica Logo */}
+          <AnimatedMoneyParticles />
         </div>
         {/* Right: Form */}
         <div className='flex-1 p-8 md:p-12 flex flex-col justify-center items-center'>

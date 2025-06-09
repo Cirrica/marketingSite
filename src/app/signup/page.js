@@ -1,27 +1,9 @@
 'use client';
 
-// Configurable animation variables
-const PARTICLE_COUNT = 6; // Number of animated icons
-const PARTICLE_FPS = 120; // Animation frames per second
-const PARTICLE_MIN_DIST = 60; // Minimum distance for repulsion
-const PARTICLE_REPULSION_STRENGTH = 0.012; // Repulsion force
-const PARTICLE_OUTWARD_EASE_STEP = 0.025; // Outward ease step
-const PARTICLE_OUTWARD_LERP = 0.22; // Outward lerp factor
-const PARTICLE_RANDOM_STEP = 0.0015; // Random movement increment
-const PARTICLE_MOVE_LIMIT = 0.045; // Max movement per frame
-const PARTICLE_DAMPING = 0.98 + 2; // Damping factor for velocity
-const PARTICLE_MARGIN = 12; // Margin percent for bounds
-
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  motion,
-  useMotionValue,
-  useAnimationFrame,
-  useTransform,
-} from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import AnimatedMoneyParticles from '../../components/AnimatedMoneyParticles';
+import AnimatedMoneyParticles from '@/components/AnimatedMoneyParticles';
 
 // SVG icons for money and stocks (move outside SignIn to avoid re-creation)
 export const DollarBill = () => (
@@ -75,7 +57,7 @@ export const Coin = () => (
 );
 export const ICONS = [DollarBill, Coin];
 
-// Remove old RandomMoneyParticles definition and usage
+// Removed all unused animation variables related to legacy particle system
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState('');
@@ -94,17 +76,53 @@ export default function SignUp() {
   const codeRefs = useRef([]);
 
   // Step 1: Info
-  const handleNextInfo = (e) => {
+  const handleNextInfo = async (e) => {
     e.preventDefault();
     if (!firstName || !lastName || !email) {
       setError('Please fill out all fields.');
       return;
     }
     setError('');
+    setLoading(true);
+    // Check if email exists
+    const checkRes = await fetch('http://localhost:8080/user/check-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const checkData = await checkRes.json();
+    if (checkData.exists) {
+      setLoading(false);
+      setError(
+        'Email already registered. Please sign in or use another email.'
+      );
+      return;
+    }
+    // Now send OTP
+    const response = await fetch('http://localhost:8080/user/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    setLoading(false);
+    const data = await response.json();
+    if (!response.ok) {
+      setError(data.error || 'Failed to send OTP.');
+      return;
+    }
     setStep(2);
   };
 
   // Step 2: Code verification
+  const verifyCode = async () => {
+    const response = await fetch('http://localhost:8080/user/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code: code.join('') }),
+    });
+    if (!response.ok) return false;
+    return true;
+  };
   const handleCodeChange = (idx, val) => {
     if (!/^[0-9a-zA-Z]?$/.test(val)) return;
     const newCode = [...code];
@@ -128,10 +146,6 @@ export default function SignUp() {
     setTimeout(() => {
       codeRefs.current[Math.min(arr.length, CODE_LENGTH - 1)]?.focus();
     }, 0);
-  };
-  const verifyCode = async () => {
-    // Placeholder: always true after 1s
-    return new Promise((resolve) => setTimeout(() => resolve(true), 1000));
   };
   const handleVerifyCode = async (e) => {
     e.preventDefault();
@@ -167,58 +181,38 @@ export default function SignUp() {
     }
     setLoading(true);
     setError('');
-    // Placeholder signup logic
-    setTimeout(() => {
-      setLoading(false);
-      window.location.href = '/onboarding';
-    }, 1200);
+    // Call backend signup
+    const response = await fetch('http://localhost:8080/user/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ firstName, lastName, email, password }),
+    });
+    const data = await response.json();
+    setLoading(false);
+    if (!response.ok || !data.user) {
+      setError(data.error || 'Signup failed.');
+      return;
+    }
+    // Immediately sign in to get JWT
+    const signinRes = await fetch('http://localhost:8080/user/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const signinData = await signinRes.json();
+    if (!signinRes.ok || !signinData.token) {
+      setError(signinData.error || 'Signup succeeded but login failed.');
+      return;
+    }
+    // Always overwrite JWT token after signup/signin
+    window.localStorage.setItem('cirricaToken', signinData.token);
+    window.location.href = '/onboarding';
   };
 
-  // Orbit config (must be above iconConfigs and iconTransforms)
-  const orbitRadius = 126; // px, adjust for your layout (was 110, +15%)
-  const iconSize = 36.8; // px, for centering (was 32, +15%)
-  const center = 128.8; // px, half of w-64/h-64 (was 112, +15%)
-
-  // Animate a shared time value for perpetual, non-repeating movement
-  const time = useMotionValue(0);
-  useAnimationFrame((t) => {
-    time.set(t / 1000); // seconds
-  });
-
-  // Calculate icon positions directly in render (no hooks in loops)
-  function getIconTransforms() {
-    const t = time.get();
-    const transforms = [];
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const baseAngle = (2 * Math.PI * i) / PARTICLE_COUNT;
-      const seed = i * 100; // deterministic for SSR/CSR
-      const wanderAngle =
-        baseAngle +
-        0.9 * Math.sin(t * 0.11 + seed) +
-        0.7 * Math.cos(t * 0.13 + seed * 1.3) +
-        0.5 * Math.sin(t * 0.09 + seed * 2.1) +
-        t * 0.07;
-      const wanderRadius =
-        orbitRadius +
-        22 * Math.sin(t * 0.09 + seed * 0.7) +
-        16 * Math.cos(t * 0.06 + seed * 1.9) +
-        10 * Math.sin(t * 0.13 + seed * 2.7);
-      const left = center + wanderRadius * Math.cos(wanderAngle) - iconSize / 2;
-      const top = center + wanderRadius * Math.sin(wanderAngle) - iconSize / 2;
-      transforms.push({ left, top });
-    }
-    return transforms;
-  }
-
-  // Step 2: Code verification (add keyboard navigation)
+  // Handle keyboard navigation for code input
   const handleCodeKeyDown = (e, idx) => {
     if (e.key === 'Backspace') {
-      if (code[idx]) {
-        // Clear current
-        const newCode = [...code];
-        newCode[idx] = '';
-        setCode(newCode);
-      } else if (idx > 0) {
+      if (!code[idx] && idx > 0) {
         codeRefs.current[idx - 1]?.focus();
       }
     } else if (e.key === 'ArrowLeft' && idx > 0) {
@@ -226,7 +220,10 @@ export default function SignUp() {
     } else if (e.key === 'ArrowRight' && idx < CODE_LENGTH - 1) {
       codeRefs.current[idx + 1]?.focus();
     } else if (e.key === 'Enter') {
-      handleVerifyCode(e);
+      // Optionally submit the code if all fields are filled
+      if (step === 2 && code.every((c) => c)) {
+        handleVerifyCode(e);
+      }
     }
   };
 
@@ -249,50 +246,8 @@ export default function SignUp() {
             className='absolute inset-0 z-0 pointer-events-none blur-xl'
             style={{ filter: 'blur(32px)' }}
           />
-          <motion.div
-            initial={{ scale: 1.035, opacity: 0 }}
-            animate={{ scale: 1.15, opacity: 1 }}
-            transition={{ duration: 1 }}
-            className='relative w-full h-full min-h-[36.8rem] flex items-center justify-center'
-          >
-            {/* Pulsing Halo */}
-            <motion.div
-              className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[294px] h-[294px] rounded-full bg-gradient-to-br from-[#daa56a]/30 to-[#fadabd]/20 blur-2xl opacity-70 z-0'
-              animate={{ scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
-              transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-            />
-            <AnimatedMoneyParticles
-              count={6}
-              iconSize={36.8}
-              area={294}
-              zIndex={2}
-            />
-            {/* Central logo with pulse and subtle ring */}
-            <motion.div
-              className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[147px] h-[147px] rounded-full border-2 border-[#daa56a]/40 z-10'
-              animate={{ scale: [1, 1.04, 1], opacity: [0.8, 1, 0.8] }}
-              transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-            />
-            <motion.img
-              src='/clearCircleLogo.png'
-              alt='Cirrica Logo'
-              className='relative z-20 w-[147px] h-[147px] rounded-full aspect-square border-4 border-[#daa56a]/60 shadow-[0_0_32px_0px_rgba(218,165,106,0.18),0_0_64px_0px_rgba(250,218,189,0.12)] drop-shadow-lg'
-              style={{
-                objectFit: 'contain',
-                background: 'rgba(255,255,255,0.04)',
-                backdropFilter: 'blur(2px)',
-              }}
-              animate={{
-                scale: [1, 1.08, 1],
-                boxShadow: [
-                  '0 0 46px 12px #daa56a33',
-                  '0 0 69px 23px #fadabd33',
-                  '0 0 46px 12px #daa56a33',
-                ],
-              }}
-              transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-            />
-          </motion.div>
+          {/* Animated Cirrica Logo */}
+          <AnimatedMoneyParticles />
         </div>
         {/* Right: Signup Form */}
         <div className='flex-1 p-8 md:p-12 flex flex-col justify-center items-center relative'>
