@@ -61,6 +61,8 @@ export const ICONS = [DollarBill, Coin];
 
 // Remove old RandomMoneyParticles definition and usage
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -72,7 +74,7 @@ export default function SignIn() {
     setLoading(true);
     setError('');
     // Call backend signin
-    const response = await fetch('http://localhost:8080/user/signin', {
+    const response = await fetch(`${API_URL}/user/signin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),

@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 export default function OnboardingPage() {
   const [user, setUser] = useState(null);
@@ -15,12 +15,14 @@ export default function OnboardingPage() {
       try {
         // Only decode if token is a valid JWT (3 parts separated by .)
         if (token.split('.').length === 3) {
-          const userData = jwt_decode(token);
+          const userData = jwtDecode(token);
           setUser(userData);
         } else {
           setUser(null);
         }
       } catch (e) {
+        console.log(e);
+
         setUser(null);
       }
     }

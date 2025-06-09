@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AnimatedMoneyParticles from '@/components/AnimatedMoneyParticles';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 // SVG icons for money and stocks (move outside SignIn to avoid re-creation)
 export const DollarBill = () => (
   <svg
@@ -75,6 +77,11 @@ export default function SignUp() {
   const [code, setCode] = useState(Array(CODE_LENGTH).fill(''));
   const codeRefs = useRef([]);
 
+  // Resend code state
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
+  const [resendError, setResendError] = useState('');
+
   // Step 1: Info
   const handleNextInfo = async (e) => {
     e.preventDefault();
@@ -85,7 +92,7 @@ export default function SignUp() {
     setError('');
     setLoading(true);
     // Check if email exists
-    const checkRes = await fetch('http://localhost:8080/user/check-email', {
+    const checkRes = await fetch(`${API_URL}/user/check-email`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
@@ -99,7 +106,7 @@ export default function SignUp() {
       return;
     }
     // Now send OTP
-    const response = await fetch('http://localhost:8080/user/send-otp', {
+    const response = await fetch(`${API_URL}/email/send-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
@@ -113,14 +120,20 @@ export default function SignUp() {
     setStep(2);
   };
 
+  // Track OTP verification state and token
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpToken, setOtpToken] = useState('');
+
   // Step 2: Code verification
   const verifyCode = async () => {
-    const response = await fetch('http://localhost:8080/user/verify-otp', {
+    const response = await fetch(`${API_URL}/email/verify-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, code: code.join('') }),
     });
-    if (!response.ok) return false;
+    const data = await response.json();
+    if (!response.ok || !data.otpToken) return false;
+    setOtpToken(data.otpToken);
     return true;
   };
   const handleCodeChange = (idx, val) => {
@@ -158,6 +171,7 @@ export default function SignUp() {
     const ok = await verifyCode();
     setLoading(false);
     if (ok) {
+      setOtpVerified(true);
       setStep(3);
     } else {
       setError('Invalid code.');
@@ -167,6 +181,10 @@ export default function SignUp() {
   // Step 3: Password
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (!otpVerified || !otpToken) {
+      setError('Please verify your email before signing up.');
+      return;
+    }
     if (!password || !confirmPassword) {
       setError('Please enter and confirm your password.');
       return;
@@ -181,11 +199,11 @@ export default function SignUp() {
     }
     setLoading(true);
     setError('');
-    // Call backend signup
-    const response = await fetch('http://localhost:8080/user/signup', {
+    // Call backend signup, send otpToken
+    const response = await fetch(`${API_URL}/user/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ firstName, lastName, email, password }),
+      body: JSON.stringify({ firstName, lastName, email, password, otpToken }),
     });
     const data = await response.json();
     setLoading(false);
@@ -194,7 +212,7 @@ export default function SignUp() {
       return;
     }
     // Immediately sign in to get JWT
-    const signinRes = await fetch('http://localhost:8080/user/signin', {
+    const signinRes = await fetch(`${API_URL}/user/signin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -224,6 +242,29 @@ export default function SignUp() {
       if (step === 2 && code.every((c) => c)) {
         handleVerifyCode(e);
       }
+    }
+  };
+
+  const handleResendCode = async () => {
+    setResendLoading(true);
+    setResendSuccess(false);
+    setResendError('');
+    try {
+      const res = await fetch(`${API_URL}/email/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setResendSuccess(true);
+      } else {
+        setResendError(data.error || 'Failed to resend code');
+      }
+    } catch (err) {
+      setResendError('Network error');
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -411,6 +452,27 @@ export default function SignUp() {
                 >
                   {loading ? 'Verifying...' : 'Verify Code'}
                 </button>
+                {/* Resend Code Section */}
+                <div className='mt-4 text-center'>
+                  <button
+                    type='button'
+                    onClick={handleResendCode}
+                    disabled={resendLoading}
+                    className='w-full py-2 rounded bg-gradient-to-r from-[#36302d] to-[#47403d] text-[#fadabd] font-semibold shadow hover:from-[#47403d] hover:to-[#36302d] transition cursor-pointer'
+                  >
+                    {resendLoading ? 'Resending...' : 'Resend Code'}
+                  </button>
+                  {resendSuccess && (
+                    <div className='text-green-400 text-sm mt-2'>
+                      Code sent! Please check your email.
+                    </div>
+                  )}
+                  {resendError && (
+                    <div className='text-red-400 text-sm mt-2'>
+                      {resendError}
+                    </div>
+                  )}
+                </div>
               </>
             )}
             {step === 3 && (
