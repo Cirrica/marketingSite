@@ -24,7 +24,7 @@ export default function Navbar() {
     );
   }
   return (
-    <nav className='w-full flex items-center justify-between px-4 md:px-8 py-3 md:py-4 bg-gradient-to-r from-[#050506]/95 to-[#0a0a0c]/95 backdrop-blur-xl shadow-2xl sticky top-0 z-30 border-b border-[#daa56a]/30'>
+    <nav className='w-full flex items-center justify-between px-4 md:px-8 py-3 md:py-4 bg-gradient-to-r from-[#050506] to-[#0a0a0c] backdrop-blur-2xl shadow-2xl sticky top-0 z-30 border-b border-[#daa56a]/30'>
       <Link
         href='/'
         className='flex items-center gap-2 text-lg md:text-xl font-bold tracking-tight text-[#daa56a] hover:text-[#fadabd] min-w-0'
@@ -66,7 +66,7 @@ export default function Navbar() {
       </div>
       {/* Mobile menu */}
       {open && (
-        <div className='absolute top-full left-0 w-full bg-[#0a0a0c] border-b border-[#daa56a]/20 flex flex-col items-center gap-2 py-2 z-40 shadow-xl md:hidden animate-fade-in'>
+        <div className='absolute top-full left-0 w-full bg-gradient-to-r from-[#050506] to-[#0a0a0c] backdrop-blur-2xl shadow-2xl border-b border-[#daa56a]/30 flex flex-col items-center gap-2 py-2 z-40 md:hidden animate-fade-in'>
           <NavLink href='/'>Home</NavLink>
           <NavLink href='/how-it-works'>How It Works</NavLink>
           <NavLink href='/signin'>Sign In</NavLink>

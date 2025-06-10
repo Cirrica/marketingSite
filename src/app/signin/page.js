@@ -92,15 +92,16 @@ export default function SignIn() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-[#050506] to-[#0a0a0c] px-4'>
-      <div className='w-full max-w-4xl bg-[#0a0a0c]/80 rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-[#daa56a]/20 backdrop-blur-md relative'>
+      <div className='w-full max-w-4xl bg-[#0a0a0c]/80 rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-[#daa56a]/20 backdrop-blur-2xl relative'>
         {/* Outer glow for the whole card */}
         <div
           className='absolute inset-0 pointer-events-none z-0'
           style={{
-            filter: 'blur(32px)',
-            boxShadow: '0 0 80px 0 #daa56a33, 0 0 160px 0 #fadabd22',
-            background: 'linear-gradient(120deg, #daa56a22 0%, #fadabd22 100%)',
+            filter: 'blur(24px)', // reduce blur for more color visibility
+            boxShadow: '0 0 40px 0 #daa56a22, 0 0 80px 0 #fadabd11', // soften the glow
+            background: 'linear-gradient(120deg, #daa56a11 0%, #fadabd11 100%)', // lower opacity for more background color
             borderRadius: '1.5rem',
+            opacity: 0.7, // allow more of the main box color to show through
           }}
         />
         {/* Left: Animated Modern Visual - "Secure Data Orbit" */}

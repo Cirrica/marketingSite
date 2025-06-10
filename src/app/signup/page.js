@@ -73,7 +73,7 @@ export default function SignUp() {
   const [step, setStep] = useState(1); // 1: info, 2: code, 3: password
 
   // Code verification state
-  const CODE_LENGTH = 6; // Change this to set number of boxes
+  const CODE_LENGTH = 6; //   to set number of boxes
   const [code, setCode] = useState(Array(CODE_LENGTH).fill(''));
   const codeRefs = useRef([]);
 
@@ -268,17 +268,39 @@ export default function SignUp() {
     }
   };
 
+  // Password validation states
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [showPasswordReqs, setShowPasswordReqs] = useState(false);
+
+  // Password requirements
+  const passwordReqs = [
+    {
+      label: 'At least 8 characters',
+      test: (pw) => pw.length >= 8,
+    },
+    {
+      label: 'At least 1 special character (!@#$%^&* etc.)',
+      test: (pw) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(pw),
+    },
+  ];
+
+  useEffect(() => {
+    setPasswordValid(passwordReqs.every((r) => r.test(password)));
+  }, [password]);
+
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-[#050506] to-[#0a0a0c] px-4'>
-      <div className='w-full max-w-4xl bg-[#0a0a0c]/80 rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-[#daa56a]/20 backdrop-blur-md relative'>
-        {/* Outer glow for the whole card (matches signin) */}
+      <div className='w-full max-w-4xl bg-[#0a0c0c]/80 rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-[#daa56a]/20 backdrop-blur-2xl relative'>
+        {/* Outer glow for the whole card */}
         <div
           className='absolute inset-0 pointer-events-none z-0'
           style={{
-            filter: 'blur(32px)',
-            boxShadow: '0 0 80px 0 #daa56a33, 0 0 160px 0 #fadabd22',
-            background: 'linear-gradient(120deg, #daa56a22 0%, #fadabd22 100%)',
+            filter: 'blur(24px)', // reduce blur for more color visibility
+            boxShadow: '0 0 40px 0 #daa56a22, 0 0 80px 0 #fadabd11', // soften the glow
+            background: 'linear-gradient(120deg, #daa56a11 0%, #fadabd11 100%)', // lower opacity for more background color
             borderRadius: '1.5rem',
+            opacity: 0.7, // allow more of the main box color to show through
           }}
         />
         {/* Left: Animated Modern Visual - "Secure Data Orbit" */}
@@ -497,9 +519,40 @@ export default function SignUp() {
                     className='w-full px-4 py-2 rounded text-white border border-[#daa56a]/30 focus:outline-none focus:ring-2 focus:ring-[#daa56a] transition bg-transparent'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onFocus={() => setShowPasswordReqs(true)}
+                    onBlur={() => setPasswordTouched(true)}
                     required
                     autoComplete='new-password'
                   />
+                  {showPasswordReqs && (
+                    <div className='mt-2 mb-1 text-xs text-[#fadabd] bg-[#18181b] rounded-lg p-3 border border-[#daa56a]/20 shadow-lg animate-fade-in'>
+                      <div className='mb-2 font-semibold text-[#daa56a] text-sm flex items-center gap-2'>
+                        <span className='inline-block w-2 h-2 rounded-full bg-[#daa56a]'></span>
+                        Password must have:
+                      </div>
+                      <ul className='space-y-1'>
+                        {passwordReqs.map((req, i) => (
+                          <li
+                            key={i}
+                            className={`flex items-center gap-2 transition-all duration-200 ${
+                              req.test(password)
+                                ? 'text-green-400'
+                                : 'text-red-400 animate-pulse'
+                            }`}
+                          >
+                            <span
+                              className={`inline-block w-3 h-3 rounded-full border-2 ${
+                                req.test(password)
+                                  ? 'bg-green-400 border-green-400'
+                                  : 'bg-transparent border-red-400'
+                              }`}
+                            ></span>
+                            <span className='font-mono'>{req.label}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className='block text-[#daa56a] mb-1 text-sm font-medium'>
