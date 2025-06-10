@@ -257,7 +257,7 @@ export default function HowItWorksPage() {
             {/* Modern CTA button, visually separated */}
             <div className='w-full flex justify-start mt-2'>
               <motion.button
-                className='bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-[#18120a] font-extrabold px-10 py-5 rounded-md shadow-xl text-xl md:text-2xl hover:scale-105 hover:shadow-2xl transition-all duration-300 border-0 focus:outline-none focus:ring-4 focus:ring-[#daa56a]/40 backdrop-blur-xl mt-4 text-left'
+                className='bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-[#18120a] font-extrabold px-10 py-5 rounded-md shadow-xl text-xl md:text-2xl hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-[#daa56a] transition-all duration-300 border-0 focus:outline-none focus:ring-4 focus:ring-[#daa56a]/40 backdrop-blur-xl mt-4 text-left cursor-pointer'
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => (window.location.href = '/signup')}
