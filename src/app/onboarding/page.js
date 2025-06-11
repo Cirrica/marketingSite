@@ -41,32 +41,22 @@ export default function OnboardingPage() {
     );
   }
 
+  // Updated onboarding message for signed up/waitlist
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-[#050506] to-[#0a0a0c] text-white'>
-      <div className='bg-[#0a0a0c]/80 rounded-2xl shadow-2xl p-8 max-w-lg w-full border border-[#daa56a]/20'>
-        <h1 className='text-3xl font-bold mb-4 text-[#daa56a]'>
-          Welcome, {user.first_name || user.firstName}!
+      <div className='bg-[#0a0a0c]/80 rounded-2xl shadow-2xl p-8 max-w-lg w-full border border-[#daa56a]/20 text-center'>
+        <h1 className='text-3xl md:text-4xl font-extrabold mb-4 text-[#daa56a] drop-shadow'>
+          🎉 You’re In!
         </h1>
-        <div className='space-y-2 text-lg'>
-          <div>
-            <b>First Name:</b> {user.first_name || user.firstName}
-          </div>
-          <div>
-            <b>Last Name:</b> {user.last_name || user.lastName}
-          </div>
-          <div>
-            <b>Email:</b> {user.email}
-          </div>
-          <div>
-            <b>Signup Date:</b> {user.signup_date || user.signupDate}
-          </div>
-          <div>
-            <b>Verified:</b> {user.is_verified ? 'Yes' : 'No'}
-          </div>
-          <div>
-            <b>User ID:</b> {user.user_id || user.userId}
-          </div>
-        </div>
+        <p className='text-lg md:text-xl text-[#fadabd] mb-4'>
+          Thanks for signing up for Cirrica Capital.
+        </p>
+        <div className='w-16 h-1 rounded-full bg-gradient-to-r from-[#daa56a] via-[#fadabd] to-[#daa56a] opacity-80 mx-auto my-4'></div>
+        <p className='text-base md:text-lg text-[#fadabd] mb-6'>
+          You’re on the waitlist while we finish developing our Alpha program.<br />
+          We’ll notify you as soon as you can start your investing journey.<br />
+          <span className='text-[#daa56a] font-semibold'>Stay tuned for updates!</span>
+        </p>
       </div>
     </div>
   );
