@@ -11,12 +11,15 @@
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
+  
   "dependencies": {
     "@opennextjs/cloudflare": "^1.1.0",
     "framer-motion": "^12.15.0",
+    "jwt-decode": "^4.0.0",
     "next": "15.3.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-icons": "^4.12.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

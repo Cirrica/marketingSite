@@ -228,6 +228,7 @@ export default function Home() {
         shaftPath={shaftPath}
         leftWing={leftWing}
         rightWing={rightWing}
+        className='pt-8 md:pt-16' // add more top padding
       />
       <AboutSection
         aboutRef={aboutRef}
