@@ -81,7 +81,7 @@ export default function AboutSection({
             platform that opens the doors of opportunity to ambitious
             individuals—especially students and early learners—who have the
             drive to learn, the skill to grow, and the discipline to build, but
-            not always the capital to get started.
+            not always the capital to get started..
           </p>
         </motion.div>
         {/* Platform features with icons - build as blocks */}
