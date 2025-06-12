@@ -60,9 +60,7 @@ const journeySteps = [
           </li>
           <li>
             <b>Investment Competitions:</b> Compete using virtual currency in
-            regular competitions. Top performers often exceed{' '}
-            <span className='text-[#daa56a] font-bold'>15–30%</span> virtual
-            profit margins.
+            regular competitions.
           </li>
           <li>
             <b>Personal Feedback & Growth:</b> Our team communicates directly
@@ -81,9 +79,9 @@ const journeySteps = [
     description: (
       <>
         <p className='mb-2'>
-          Phase 2 transitions successful Alpha participants into a rewarding,
-          low-risk investing model that allows you to grow your capital
-          alongside Cirrica Capital’s resources.
+          Phase 2 transitions successful Alpha participants into a rewarding
+          investing model that allows you to grow your capital alongside Cirrica
+          Capital’s resources.
         </p>
         <ul className='list-disc ml-5 text-[#fadabd] text-base'>
           <li>
@@ -102,8 +100,8 @@ const journeySteps = [
             <b>Profit-Sharing Model:</b> Keep 100% of your profits, plus a share
             of ours.{' '}
             <span className='text-[#daa56a]'>
-              E.g. $50 makes 25% ($12.50), our $25 makes $6.25, you get half
-              ($3.12) = $15.62 total profit.
+              E.g. $50 makes 25% ($12.50), our $25 makes $6.25, you get a third
+              ($2.08) = $14.58 total profit.
             </span>
           </li>
           <li>
