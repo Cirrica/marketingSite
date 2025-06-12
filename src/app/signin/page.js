@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-// Removed all unused animation variables related to legacy particle system
+// Removed all unused animation variables related to legacy particle system.
 
 import AnimatedMoneyParticles from '@/components/AnimatedMoneyParticles';
 
