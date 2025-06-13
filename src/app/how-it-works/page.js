@@ -16,7 +16,7 @@ const journeySteps = [
   {
     key: 'start',
     title: 'Welcome to Cirrica Capital',
-    icon: <FaMapMarkerAlt className='text-[#daa56a] text-4xl' />, // desktop only
+    icon: <FaMapMarkerAlt className='text-[#daa56a] text-4xl' />, // desktop only.
     color: '#daa56a',
     description: (
       <>
@@ -35,7 +35,7 @@ const journeySteps = [
   {
     key: 'alpha',
     title: 'Phase 1: Alpha – Learn, Practice, and Compete',
-    icon: <FaBook className='text-[#fadabd] text-3xl' />, // desktop only
+    icon: <FaBook className='text-[#fadabd] text-3xl' />, // desktop only...
     color: '#fadabd',
     description: (
       <>
