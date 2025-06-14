@@ -346,7 +346,7 @@ function ExplorationMap({ steps }) {
                 <span className='relative z-10'>{step.icon}</span>
               </motion.div>
             </div>
-            {/* Card - always visible, centered on mobile */}
+            {/* Card - always visible, centered on mobile. */}
             <motion.div
               className='flex-1 z-20 bg-[#1a1510]/60 border border-[#daa56a]/20 rounded-2xl shadow-lg px-8 py-8 min-w-[260px] max-w-2xl text-center text-[#fadabd] backdrop-blur-2xl transition-all duration-500 group mx-auto'
               style={{
