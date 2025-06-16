@@ -74,14 +74,14 @@ export default function Home() {
     {
       firstName: 'Anthony',
       lastName: 'Kercher',
-      role: 'CTO & Co-founder',
+      role: 'CTOO & Co-founder',
       linkedin: 'https://linkedin.com/in/anthonykercher/',
       email: 'anthony@cirrica.com',
     },
     {
       firstName: 'George',
       lastName: 'Paraskevopoulos',
-      role: 'COO & Co-founder',
+      role: 'CPO & Co-founder',
       linkedin: 'https://www.linkedin.com/in/george-paraskevopoulos-00b233369/',
       email: 'george@cirrica.com',
     },
