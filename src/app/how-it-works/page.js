@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import FadeInSection from '../../components/FadeInSection';
-import { motion } from 'framer-motion';
 import {
   FaMapMarkerAlt,
   FaFlagCheckered,
@@ -155,50 +154,19 @@ const rightJourneySteps = [
 
 export default function HowItWorksPage() {
   return (
-    <div className='relative min-h-screen w-full overflow-x-hidden font-[family-name:var(--font-geist-sans)] text-white scroll-smooth bg-gradient-to-br from-[#050506] to-[#0a0a0c]'>
-      {/* Animated background gradient with glass overlay */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.2 }}
-        className='fixed inset-0 -z-20 bg-gradient-to-br from-[#050506] to-[#0a0a0c]'
-        aria-hidden
-      />
-      {/* Floating gold orb for extra vibe */}
-      <motion.div
-        className='pointer-events-none fixed left-1/2 top-1/4 z-0 w-[28rem] h-[28rem] rounded-full bg-gradient-to-br from-[#daa56a]/40 via-[#fadabd]/30 to-transparent blur-3xl opacity-40 shadow-2xl'
-        animate={{ y: [0, 30, 0], x: [0, -20, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ translateX: '-50%' }}
-      />
-      {/* Subtle glass overlay for depth */}
-      <div
-        className='fixed inset-0 -z-10 bg-black/80 backdrop-blur-3xl'
-        aria-hidden
-      />
-      {/* Main content - two columns, cards split */}
+    <div className='relative min-h-screen w-full overflow-x-hidden font-[family-name:var(--font-geist-sans)] text-white bg-gradient-to-br from-[#050506] to-[#0a0a0c]'>
+      {/* Remove all overlays and blur for performance */}
       <FadeInSection id='how-it-works' className='text-white py-20 md:py-32'>
         <div className='relative max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-16 items-start md:items-stretch'>
           {/* Left: Title, intro, and some cards */}
           <div className='flex-1 flex flex-col items-center text-center justify-start md:justify-start md:mt-0 gap-8'>
             <div className='mb-8 mt-0 md:mt-0 w-full'>
-              <motion.h2
-                className='text-5xl md:text-7xl font-extrabold mb-4 tracking-tight drop-shadow-xl bg-gradient-to-r from-[#daa56a] to-[#fadabd] bg-clip-text text-transparent text-left'
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-              >
+              <h2 className='text-5xl md:text-7xl font-extrabold mb-4 tracking-tight drop-shadow-xl bg-gradient-to-r from-[#daa56a] to-[#fadabd] bg-clip-text text-transparent text-left'>
                 How It Works
-              </motion.h2>
+              </h2>
               <div className='w-full relative flex flex-row items-stretch'>
                 {/* Unified glassy card for all intro text */}
-                <motion.div
-                  className='w-full max-w-xl bg-gradient-to-br from-[#18120a]/90 to-[#0a0a0c]/80 border border-[#daa56a]/30 rounded-2xl shadow-xl px-8 py-8 relative backdrop-blur-xl flex flex-col items-start justify-center text-left ml-0'
-                  style={{ marginLeft: '0px' }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15, duration: 0.7, ease: 'easeOut' }}
-                >
+                <div className='w-full max-w-xl bg-[#18120a] border border-[#daa56a]/30 rounded-2xl shadow-xl px-8 py-8 flex flex-col items-start justify-center text-left ml-0'>
                   <span className='text-2xl md:text-3xl font-extrabold text-[#daa56a] drop-shadow-lg mb-2 tracking-tight text-left'>
                     Welcome to Cirrica Capital
                   </span>
@@ -211,47 +179,35 @@ export default function HowItWorksPage() {
                     investors build confidence and expertise while providing an
                     innovative way to access bonus capital and share in profits.
                   </span>
-                </motion.div>
+                </div>
               </div>
             </div>
             {/* Left-side cards (About Us style) */}
             <div className='flex flex-col gap-6 w-full items-center'>
-              {leftJourneySteps.map((step, i) => (
+              {leftJourneySteps.map((step) => (
                 <div
                   key={step.key}
                   className='w-full relative flex flex-row items-stretch'
                 >
-                  <motion.div
-                    className='w-full bg-[#120e08]/95 rounded-2xl shadow-lg p-7 flex flex-col items-center border border-[#daa56a]/20 backdrop-blur-xl text-left ml-0'
-                    style={{ marginLeft: '0px' }}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: 0.2 + i * 0.1,
-                      duration: 0.7,
-                      ease: 'easeOut',
-                    }}
-                  >
+                  <div className='w-full bg-[#120e08] rounded-2xl shadow-lg p-7 flex flex-col items-center border border-[#daa56a]/20 text-left ml-0'>
                     <span className='text-2xl md:text-3xl font-extrabold text-[#daa56a] drop-shadow-lg mb-2 tracking-tight text-left'>
                       {step.title}
                     </span>
                     <div className='text-base md:text-lg font-medium text-[#fadabd] max-w-2xl drop-shadow text-left'>
                       {step.description}
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
               ))}
             </div>
             {/* Modern CTA button, visually separated */}
             <div className='w-full flex justify-start mt-2'>
-              <motion.button
-                className='bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-[#18120a] font-extrabold px-10 py-5 rounded-md shadow-xl text-xl md:text-2xl hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-[#daa56a] transition-all duration-300 border-0 focus:outline-none focus:ring-4 focus:ring-[#daa56a]/40 backdrop-blur-xl mt-4 text-left cursor-pointer'
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.97 }}
+              <button
+                className='bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-[#18120a] font-extrabold px-10 py-5 rounded-md shadow-xl text-xl md:text-2xl hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-[#daa56a] transition-all duration-300 border-0 focus:outline-none focus:ring-4 focus:ring-[#daa56a]/40 mt-4 text-left cursor-pointer'
                 onClick={() => (window.location.href = '/signup')}
               >
                 Start Your Cirrica Journey
-              </motion.button>
+              </button>
             </div>
           </div>
           {/* Right: Timeline with remaining cards */}
@@ -266,10 +222,9 @@ export default function HowItWorksPage() {
 
 // --- ExplorationMap component ---
 function ExplorationMap({ steps }) {
-  const [activeStep, setActiveStep] = React.useState(null);
+  // Remove all animation and state for performance
   return (
     <div className='relative w-full flex flex-col items-center py-8'>
-      {/* Timeline and icons for desktop only */}
       <svg
         className='absolute left-1/2 top-0 -translate-x-1/2 w-3 h-full z-0 pointer-events-none hidden md:block'
         width='12'
@@ -292,180 +247,43 @@ function ExplorationMap({ steps }) {
         />
       </svg>
       <div className='relative flex flex-col items-center w-full max-w-2xl mx-auto z-10'>
-        {steps.map((step, i) => (
-          <motion.div
+        {steps.map((step) => (
+          <div
             key={step.key}
             className='relative flex w-full items-center justify-center mb-12 last:mb-0'
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ delay: i * 0.15, duration: 0.7, ease: 'easeOut' }}
           >
             {/* Icon for desktop only */}
             <div className='flex flex-col items-center mr-10 hidden md:flex'>
-              <motion.div
-                className={`relative rounded-full bg-gradient-to-br from-[#18120a] to-[#232228] border-4 flex items-center justify-center transition-all duration-300 shadow-[0_4px_32px_0_rgba(218,165,106,0.18)] ${
-                  activeStep === step.key
-                    ? 'scale-125 border-[#daa56a] shadow-[0_0_48px_0_#daa56acc]'
-                    : 'border-[#36302d]'
-                }`}
+              <div
+                className='relative rounded-full bg-gradient-to-br from-[#18120a] to-[#232228] border-4 flex items-center justify-center shadow-[0_4px_32px_0_rgba(218,165,106,0.18)] border-[#daa56a]'
                 style={{
-                  borderColor: '#daa56a',
                   width: 80,
                   height: 80,
-                  boxShadow:
-                    activeStep === step.key
-                      ? `0 0 48px 0 #daa56acc, 0 4px 32px 0 #daa56a33`
-                      : '0 4px 32px 0 #daa56a18',
+                  boxShadow: '0 4px 32px 0 #daa56a18',
                 }}
-                animate={{ scale: activeStep === step.key ? 1.18 : 1 }}
-                transition={{ type: 'spring', stiffness: 200, damping: 18 }}
-                onMouseEnter={() => setActiveStep(step.key)}
-                onMouseLeave={() => setActiveStep(null)}
-                tabIndex={0}
-                onFocus={() => setActiveStep(step.key)}
-                onBlur={() => setActiveStep(null)}
               >
-                {/* Glowing pulse */}
-                <motion.span
-                  className='absolute inset-0 rounded-full pointer-events-none'
-                  animate={{
-                    opacity: [0.5, 1, 0.5],
-                    scale: [1, 1.25, 1],
-                  }}
-                  transition={{
-                    duration: 2.2,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                  style={{
-                    background: `radial-gradient(circle, #daa56a55 0%, transparent 70%)`,
-                    zIndex: 0,
-                  }}
-                />
                 <span className='relative z-10'>{step.icon}</span>
-              </motion.div>
+              </div>
             </div>
             {/* Card - always visible, centered on mobile */}
-            <motion.div
-              className='flex-1 z-20 bg-[#1a1510]/60 border border-[#daa56a]/20 rounded-2xl shadow-lg px-8 py-8 min-w-[260px] max-w-2xl text-center text-[#fadabd] backdrop-blur-2xl transition-all duration-500 group mx-auto'
+            <div
+              className='flex-1 z-20 bg-[#1a1510] border border-[#daa56a]/20 rounded-2xl shadow-lg px-8 py-8 min-w-[260px] max-w-2xl text-center text-[#fadabd] group mx-auto'
               style={{
                 borderColor: '#daa56a',
                 borderRadius: 24,
-                background: 'rgba(26,21,16,0.60)',
+                background: '#1a1510',
               }}
-              whileHover={{
-                scale: 1.045,
-                boxShadow: '0 0 56px 0 #daa56a33, 0 8px 48px 0 #daa56a22',
-              }}
-              whileTap={{ scale: 0.98 }}
-              onMouseEnter={() => setActiveStep(step.key)}
-              onMouseLeave={() => setActiveStep(null)}
-              tabIndex={0}
-              onFocus={() => setActiveStep(step.key)}
-              onBlur={() => setActiveStep(null)}
             >
-              <motion.div
-                className='font-extrabold text-2xl md:text-3xl mb-3 tracking-tight drop-shadow text-[#daa56a]'
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{
-                  delay: 0.1 + i * 0.1,
-                  duration: 0.5,
-                  ease: 'easeOut',
-                }}
-              >
+              <div className='font-extrabold text-2xl md:text-3xl mb-3 tracking-tight drop-shadow text-[#daa56a]'>
                 {step.title}
-              </motion.div>
-              <motion.div
-                className='text-base md:text-lg text-[#fadabd] leading-relaxed'
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{
-                  delay: 0.18 + i * 0.1,
-                  duration: 0.5,
-                  ease: 'easeOut',
-                }}
-              >
+              </div>
+              <div className='text-base md:text-lg text-[#fadabd] leading-relaxed'>
                 {step.description}
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </div>
-  );
-}
-
-// --- ExplorationCard component ---
-function ExplorationCard({
-  title,
-  color,
-  details,
-  open,
-  onClick,
-  big,
-  wide,
-  small,
-  tiny,
-  preview,
-}) {
-  // Card size classes
-  let sizeClass = 'max-w-xs';
-  if (big) sizeClass = 'max-w-3xl min-h-[180px] text-3xl';
-  else if (wide) sizeClass = 'max-w-2xl';
-  else if (small) sizeClass = 'max-w-sm text-lg';
-  else if (tiny) sizeClass = 'max-w-xs text-base';
-
-  return (
-    <motion.div
-      className={`relative bg-gradient-to-br from-black/80 to-[#18181b]/90 border-2 rounded-3xl shadow-2xl px-6 py-6 w-full min-h-[90px] cursor-pointer transition-all duration-500 group flex flex-col items-center ${sizeClass} ${
-        open
-          ? 'scale-105 ring-4 ring-[' + color + ']/40 z-20'
-          : 'hover:scale-102'
-      }`}
-      style={{
-        borderColor: color,
-        boxShadow: open ? `0 0 40px 0 ${color}44` : undefined,
-      }}
-      initial={{ opacity: 0, y: 40 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        scale: open ? 1.08 : 1,
-        boxShadow: open ? `0 0 40px 0 ${color}44` : undefined,
-      }}
-      transition={{ type: 'spring', stiffness: 200, damping: 24 }}
-      tabIndex={0}
-      onClick={onClick}
-      aria-expanded={open}
-      whileHover={{
-        scale: 1.04,
-        boxShadow: `0 0 40px 0 ${color}33`,
-      }}
-      whileTap={{ scale: 0.98 }}
-    >
-      <span
-        className={`font-bold mb-2 tracking-wide drop-shadow ${
-          big ? 'text-4xl' : small ? 'text-2xl' : tiny ? 'text-lg' : 'text-xl'
-        }`}
-        style={{ color }}
-      >
-        {title}
-      </span>
-      <motion.div
-        className='mt-2 w-full text-base text-[#fadabd]/90'
-        initial={false}
-        animate={{
-          opacity: open ? 1 : 1,
-          maxHeight: open ? 400 : 40,
-          filter: open ? 'blur(0px)' : 'blur(0px)',
-        }}
-        transition={{ duration: 0.5, ease: 'easeInOut' }}
-        style={{ overflow: 'hidden' }}
-      >
-        {open ? details : <div className='truncate'>{preview}</div>}
-      </motion.div>
-    </motion.div>
   );
 }
