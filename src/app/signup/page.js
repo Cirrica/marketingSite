@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -57,9 +56,8 @@ export const Coin = () => (
     </text>
   </svg>
 );
-export const ICONS = [DollarBill, Coin];
 
-// Removed all unused animation variables related to legacy particle system
+export const ICONS = [DollarBill, Coin];
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState('');
@@ -68,12 +66,13 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [ageConfirmation, setAgeConfirmation] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [step, setStep] = useState(1); // 1: info, 2: code, 3: password
 
   // Code verification state
-  const CODE_LENGTH = 6; //   to set number of boxes
+  const CODE_LENGTH = 6;
   const [code, setCode] = useState(Array(CODE_LENGTH).fill(''));
   const codeRefs = useRef([]);
 
@@ -89,8 +88,13 @@ export default function SignUp() {
       setError('Please fill out all fields.');
       return;
     }
+    if (!ageConfirmation) {
+      setError('You must confirm you are 18+ or have parental permission.');
+      return;
+    }
     setError('');
     setLoading(true);
+
     // Check if email exists
     const checkRes = await fetch(`${API_URL}/user/check-email`, {
       method: 'POST',
@@ -105,6 +109,7 @@ export default function SignUp() {
       );
       return;
     }
+
     // Now send OTP
     const response = await fetch(`${API_URL}/email/send-otp`, {
       method: 'POST',
@@ -136,6 +141,7 @@ export default function SignUp() {
     setOtpToken(data.otpToken);
     return true;
   };
+
   const handleCodeChange = (idx, val) => {
     if (!/^[0-9a-zA-Z]?$/.test(val)) return;
     const newCode = [...code];
@@ -145,6 +151,7 @@ export default function SignUp() {
       codeRefs.current[idx + 1]?.focus();
     }
   };
+
   const handleCodePaste = (e) => {
     const paste = e.clipboardData.getData('text').slice(0, CODE_LENGTH);
     if (!paste) return;
@@ -160,6 +167,7 @@ export default function SignUp() {
       codeRefs.current[Math.min(arr.length, CODE_LENGTH - 1)]?.focus();
     }, 0);
   };
+
   const handleVerifyCode = async (e) => {
     e.preventDefault();
     if (code.some((c) => !c)) {
@@ -199,6 +207,7 @@ export default function SignUp() {
     }
     setLoading(true);
     setError('');
+
     // Call backend signup, send otpToken
     const response = await fetch(`${API_URL}/user/signup`, {
       method: 'POST',
@@ -211,6 +220,7 @@ export default function SignUp() {
       setError(data.error || 'Signup failed.');
       return;
     }
+
     // Immediately sign in to get JWT
     const signinRes = await fetch(`${API_URL}/user/signin`, {
       method: 'POST',
@@ -222,6 +232,7 @@ export default function SignUp() {
       setError(signinData.error || 'Signup succeeded but login failed.');
       return;
     }
+
     // Always overwrite JWT token after signup/signin
     window.localStorage.setItem('cirricaToken', signinData.token);
     window.location.href = '/onboarding';
@@ -238,7 +249,6 @@ export default function SignUp() {
     } else if (e.key === 'ArrowRight' && idx < CODE_LENGTH - 1) {
       codeRefs.current[idx + 1]?.focus();
     } else if (e.key === 'Enter') {
-      // Optionally submit the code if all fields are filled
       if (step === 2 && code.every((c) => c)) {
         handleVerifyCode(e);
       }
@@ -268,53 +278,32 @@ export default function SignUp() {
     }
   };
 
-  // Password validation states
-  const [passwordValid, setPasswordValid] = useState(false);
-  const [passwordTouched, setPasswordTouched] = useState(false);
-  const [showPasswordReqs, setShowPasswordReqs] = useState(false);
-
-  // Password requirements
-  const passwordReqs = [
-    {
-      label: 'At least 8 characters',
-      test: (pw) => pw.length >= 8,
-    },
-    {
-      label: 'At least 1 special character (!@#$%^&* etc.)',
-      test: (pw) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(pw),
-    },
-  ];
-
-  useEffect(() => {
-    setPasswordValid(passwordReqs.every((r) => r.test(password)));
-  }, [password]);
-
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-[#050506] to-[#0a0a0c] px-4'>
-      <div className='w-full max-w-4xl bg-[#0a0c0c]/80 rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-[#daa56a]/20 backdrop-blur-2xl relative'>
+      <div className='w-full max-w-4xl bg-[#0a0a0c]/80 rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-[#daa56a]/20 backdrop-blur-md relative'>
         {/* Outer glow for the whole card */}
         <div
           className='absolute inset-0 pointer-events-none z-0'
           style={{
-            filter: 'blur(24px)', // reduce blur for more color visibility
-            boxShadow: '0 0 40px 0 #daa56a22, 0 0 80px 0 #fadabd11', // soften the glow
-            background: 'linear-gradient(120deg, #daa56a11 0%, #fadabd11 100%)', // lower opacity for more background color
+            filter: 'blur(32px)',
+            boxShadow: '0 0 80px 0 #daa56a33, 0 0 160px 0 #fadabd22',
+            background: 'linear-gradient(120deg, #daa56a22 0%, #fadabd22 100%)',
             borderRadius: '1.5rem',
-            opacity: 0.7, // allow more of the main box color to show through
           }}
         />
-        {/* Left: Animated Modern Visual - "Secure Data Orbit" */}
+        
+        {/* Left: Animated Modern Visual */}
         <div className='hidden md:flex flex-1 items-center justify-center bg-gradient-to-br from-[#daa56a]/10 to-[#fadabd]/10 relative'>
           <div
             className='absolute inset-0 z-0 pointer-events-none blur-xl'
             style={{ filter: 'blur(32px)' }}
           />
-          {/* Animated Cirrica Logo */}
           <AnimatedMoneyParticles />
         </div>
+        
         {/* Right: Signup Form */}
         <div className='flex-1 p-8 md:p-12 flex flex-col justify-center items-center relative'>
-          {/* Sleek, Minimal Step Bar at the Very Top (refined colors, lower position, subtle bar, glowing dots) */}
+          {/* Step Progress Bar */}
           <div
             className='absolute left-0 top-0 w-full flex flex-col items-center z-20'
             style={{ height: '40px' }}
@@ -323,9 +312,7 @@ export default function SignUp() {
               className='relative w-full max-w-sm flex items-center justify-center mt-4 mb-2'
               style={{ height: '24px' }}
             >
-              {/* Subtle, Blended Track */}
               <div className='absolute left-0 top-1/2 -translate-y-1/2 w-full h-1.5 rounded-full bg-gradient-to-r from-[#36302d]/80 via-[#daa56a]/10 to-[#fadabd]/10 shadow-[0_0_4px_0_#daa56a22]' />
-              {/* Animated Thin Progress Fill */}
               <div
                 className='absolute left-0 top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-gradient-to-r from-[#daa56a]/70 to-[#fadabd]/60 shadow-[0_0_8px_2px_#daa56a55] transition-all duration-500'
                 style={{
@@ -333,7 +320,6 @@ export default function SignUp() {
                   zIndex: 2,
                 }}
               />
-              {/* Minimal Glowing Step Dots */}
               {[1, 2, 3].map((n, i) => (
                 <div
                   key={n}
@@ -358,13 +344,14 @@ export default function SignUp() {
               ))}
             </div>
           </div>
-          {/* Always show heading/description above the stepper */}
+
           <h1 className='text-3xl md:text-4xl font-bold text-[#daa56a] mb-2 tracking-tight text-center'>
-            Join the Journey
+            Join Cirrica Paper
           </h1>
           <p className='text-[#fadabd] mb-8 text-sm md:text-base text-center'>
-            Create your Cirrica account to get started.
+            Start competing in trading tournaments.
           </p>
+
           <form
             onSubmit={
               step === 1
@@ -405,6 +392,7 @@ export default function SignUp() {
                     />
                   </div>
                 </div>
+                
                 <div>
                   <label className='block text-[#daa56a] mb-1 text-sm font-medium'>
                     Email
@@ -418,6 +406,24 @@ export default function SignUp() {
                     autoComplete='email'
                   />
                 </div>
+
+                <div className='flex items-center gap-2'>
+                  <input
+                    type='checkbox'
+                    id='ageConfirmation'
+                    checked={ageConfirmation}
+                    onChange={(e) => setAgeConfirmation(e.target.checked)}
+                    className='accent-[#daa56a] w-4 h-4 rounded focus:ring-2 focus:ring-[#daa56a] border border-[#daa56a]/30 bg-transparent'
+                    required
+                  />
+                  <label
+                    htmlFor='ageConfirmation'
+                    className='text-[#fadabd] text-sm'
+                  >
+                    I am 18 years or older, or have parental consent to participate
+                  </label>
+                </div>
+
                 {error && (
                   <div className='text-red-400 text-sm text-center'>
                     {error}
@@ -426,11 +432,14 @@ export default function SignUp() {
                 <button
                   type='submit'
                   className='w-full py-2 rounded bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-[#050506] font-semibold shadow hover:from-[#fadabd] hover:to-[#daa56a] transition cursor-pointer'
+                  disabled={loading}
                 >
-                  Next
+                  {loading ? 'Sending Code...' : 'Next'}
                 </button>
               </>
             )}
+
+            {/* ...existing code for steps 2 and 3 remain the same... */}
             {step === 2 && (
               <>
                 <div>
@@ -458,8 +467,7 @@ export default function SignUp() {
                       ))}
                   </div>
                   <div className='text-[#fadabd] text-xs text-center mb-2'>
-                    (You can paste the full code, use arrows/backspace, or press
-                    Enter)
+                    (You can paste the full code, use arrows/backspace, or press Enter)
                   </div>
                 </div>
                 {error && (
@@ -474,7 +482,7 @@ export default function SignUp() {
                 >
                   {loading ? 'Verifying...' : 'Verify Code'}
                 </button>
-                {/* Resend Code Section */}
+                
                 <div className='mt-4 text-center'>
                   <button
                     type='button'
@@ -497,6 +505,7 @@ export default function SignUp() {
                 </div>
               </>
             )}
+
             {step === 3 && (
               <>
                 <div>
@@ -519,40 +528,9 @@ export default function SignUp() {
                     className='w-full px-4 py-2 rounded text-white border border-[#daa56a]/30 focus:outline-none focus:ring-2 focus:ring-[#daa56a] transition bg-transparent'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    onFocus={() => setShowPasswordReqs(true)}
-                    onBlur={() => setPasswordTouched(true)}
                     required
                     autoComplete='new-password'
                   />
-                  {showPasswordReqs && (
-                    <div className='mt-2 mb-1 text-xs text-[#fadabd] bg-[#18181b] rounded-lg p-3 border border-[#daa56a]/20 shadow-lg animate-fade-in'>
-                      <div className='mb-2 font-semibold text-[#daa56a] text-sm flex items-center gap-2'>
-                        <span className='inline-block w-2 h-2 rounded-full bg-[#daa56a]'></span>
-                        Password must have:
-                      </div>
-                      <ul className='space-y-1'>
-                        {passwordReqs.map((req, i) => (
-                          <li
-                            key={i}
-                            className={`flex items-center gap-2 transition-all duration-200 ${
-                              req.test(password)
-                                ? 'text-green-400'
-                                : 'text-red-400 animate-pulse'
-                            }`}
-                          >
-                            <span
-                              className={`inline-block w-3 h-3 rounded-full border-2 ${
-                                req.test(password)
-                                  ? 'bg-green-400 border-green-400'
-                                  : 'bg-transparent border-red-400'
-                              }`}
-                            ></span>
-                            <span className='font-mono'>{req.label}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                 </div>
                 <div>
                   <label className='block text-[#daa56a] mb-1 text-sm font-medium'>
@@ -583,6 +561,10 @@ export default function SignUp() {
                     I agree to the{' '}
                     <a href='/terms' className='underline hover:text-[#daa56a]'>
                       Terms & Conditions
+                    </a>{' '}
+                    and{' '}
+                    <a href='/privacy' className='underline hover:text-[#daa56a]'>
+                      Privacy Policy
                     </a>
                   </label>
                 </div>
@@ -601,6 +583,7 @@ export default function SignUp() {
               </>
             )}
           </form>
+          
           <div className='mt-6 text-[#fadabd] text-sm text-center'>
             Already have an account?{' '}
             <Link href='/signin' className='text-[#daa56a] hover:underline'>

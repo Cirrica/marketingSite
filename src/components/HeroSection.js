@@ -45,7 +45,28 @@ export default function HeroSection({
               color: 'transparent',
             }}
           >
-            Revolutionizing accessibility to investing.
+            Trade. Compete. Win.
+          </div>
+          <div className='text-center mt-6 max-w-3xl px-4'>
+            <div className='flex flex-wrap items-center justify-center gap-3 text-lg sm:text-xl text-gray-300 mb-4'>
+              <span className='flex items-center gap-2'>
+                <div className='w-2 h-2 rounded-full bg-gradient-to-r from-[#daa56a] to-[#fadabd]'></div>
+                Private tournaments
+              </span>
+              <span className='hidden sm:inline text-[#daa56a]'>•</span>
+              <span className='flex items-center gap-2'>
+                <div className='w-2 h-2 rounded-full bg-gradient-to-r from-[#fadabd] to-[#daa56a]'></div>
+                Real markets
+              </span>
+              <span className='hidden sm:inline text-[#daa56a]'>•</span>
+              <span className='flex items-center gap-2'>
+                <div className='w-2 h-2 rounded-full bg-gradient-to-r from-[#daa56a] to-[#fadabd]'></div>
+                Virtual money
+              </span>
+            </div>
+            <p className='text-base sm:text-lg text-gray-400 font-light tracking-wide'>
+              The simplest way to organize stock trading competitions
+            </p>
           </div>
         </motion.div>
       </div>

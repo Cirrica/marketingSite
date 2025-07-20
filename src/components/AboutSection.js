@@ -33,7 +33,7 @@ export default function AboutSection({
               exit={{ opacity: 0, y: 40 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-              About Us
+              About Cirrica Paper
             </motion.h2>
           )}
         </AnimatePresence>
@@ -45,8 +45,8 @@ export default function AboutSection({
           transition={{ delay: 0.2, duration: 0.7, ease: 'easeOut' }}
           style={{ cursor: 'default' }}
         >
-          <span className='font-extrabold text-[#b97a2a]'>Cirrica</span> is
-          reimagining what it means to be an investor.
+          <span className='font-extrabold text-[#b97a2a]'>Cirrica Paper</span>{' '}
+          brings competitive trading to your community.
         </motion.p>
         {/* Visual block for mission - fade in up */}
         <motion.div
@@ -76,12 +76,8 @@ export default function AboutSection({
             Our Mission
           </span>
           <p className='text-base sm:text-lg text-[#fadabd]'>
-            We believe investing shouldn’t be reserved for those who have
-            already built significant wealth. At Cirrica, we’re building a
-            platform that opens the doors of opportunity to ambitious
-            individuals—especially students and early learners—who have the
-            drive to learn, the skill to grow, and the discipline to build, but
-            not always the capital to get started.
+            Join private trading tournaments. Compete with friends. One platform
+            fee covers everything.
           </p>
         </motion.div>
         {/* Platform features with icons - build as blocks */}
@@ -136,10 +132,10 @@ export default function AboutSection({
                     />
                   </svg>
                   <span className='font-bold text-[#fadabd] mb-1'>
-                    Expert-Led Education
+                    Private Tournaments
                   </span>
                   <span className='text-[#fadabd]/90 text-sm'>
-                    Interactive lessons and real-world financial skills.
+                    Invite-only competitions with your community.
                   </span>
                 </>
               )}
@@ -162,10 +158,10 @@ export default function AboutSection({
                     />
                   </svg>
                   <span className='font-bold text-[#daa56a] mb-1'>
-                    Performance-Based Challenges
+                    Real Market Data
                   </span>
                   <span className='text-[#daa56a]/90 text-sm'>
-                    Simulations and competitions to test your ability.
+                    Live prices. Virtual portfolios. Real competition.
                   </span>
                 </>
               )}
@@ -188,10 +184,10 @@ export default function AboutSection({
                     />
                   </svg>
                   <span className='font-bold text-[#fadabd] mb-1'>
-                    Real Funding for Top Performers
+                    Simple Pricing
                   </span>
                   <span className='text-[#fadabd]/90 text-sm'>
-                    Earn more than badges—earn capital to invest.
+                    One transparent fee. You handle prizes.
                   </span>
                 </>
               )}
@@ -206,11 +202,11 @@ export default function AboutSection({
           transition={{ delay: 1.2, duration: 0.7, ease: 'easeOut' }}
         >
           <span className='block text-2xl font-extrabold text-[#fadabd] mb-1'>
-            No trust fund? No problem.
+            Your community. Your competition.
           </span>
           <span className='block text-[#fadabd]/90'>
-            We’re creating a launchpad where knowledge and effort—not background
-            or bankroll—unlock financial power.
+            Private tournaments where everyone competes and anyone can win.
+            Start one or join one.
           </span>
         </motion.div>
         {/* Closing statement - fade in up */}
@@ -220,9 +216,7 @@ export default function AboutSection({
           animate={aboutInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 1.4, duration: 0.7, ease: 'easeOut' }}
         >
-          Cirrica operates as an accessible proprietary trading firm: we test
-          your ability, help you improve, and back your potential with real
-          capital.
+          Join tournaments. Trade stocks. Beat friends.
         </motion.p>
         <motion.p
           className='text-base sm:text-lg text-[#fadabd]'
@@ -230,8 +224,7 @@ export default function AboutSection({
           animate={aboutInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 1.6, duration: 0.7, ease: 'easeOut' }}
         >
-          We’re building the future of investing into a space that is
-          merit-based and radically accessible.
+          Simple. Social. Competitive.
         </motion.p>
         {/* Decorative underline */}
         <motion.div
