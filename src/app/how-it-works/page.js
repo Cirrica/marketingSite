@@ -2,160 +2,87 @@
 import React from 'react';
 import FadeInSection from '../../components/FadeInSection';
 import {
-  FaMapMarkerAlt,
-  FaFlagCheckered,
-  FaBook,
+  FaUsers,
+  FaChartLine,
   FaTrophy,
-  FaLock,
-  FaUserGraduate,
-  FaCoins,
+  FaCog,
+  FaHandshake,
+  FaPlay,
 } from 'react-icons/fa';
 
 const journeySteps = [
   {
-    key: 'start',
-    title: 'Welcome to Cirrica Capital',
-    icon: <FaMapMarkerAlt className='text-[#daa56a] text-4xl' />, // desktop only.
+    key: 'create',
+    title: 'Create',
+    icon: <FaPlay className='text-[#daa56a] text-4xl' />,
     color: '#daa56a',
     description: (
-      <>
-        <p className='mb-2'>
-          We bridge the gap between learning and successful investing. Our
-          unique two-phase program is designed to help you build confidence and
-          expertise, while providing an innovative way to access bonus capital
-          and share in profits.
-        </p>
-        <p className='text-[#fadabd]'>
-          Scroll or follow the path to see how your journey unfolds!
-        </p>
-      </>
+      <p>
+        Set up your private trading competition in minutes. Choose duration,
+        virtual capital, and rules.
+      </p>
     ),
   },
   {
-    key: 'alpha',
-    title: 'Phase 1: Alpha – Learn, Practice, and Compete',
-    icon: <FaBook className='text-[#fadabd] text-3xl' />, // desktop only...
+    key: 'invite',
+    title: 'Invite',
+    icon: <FaUsers className='text-[#fadabd] text-3xl' />,
     color: '#fadabd',
     description: (
-      <>
-        <p className='mb-2'>
-          In Alpha, our goal is simple: equip you with the skills and tools to
-          confidently invest.
-        </p>
-        <ul className='list-disc ml-5 text-[#fadabd] text-base'>
-          <li>
-            <b>Virtual Paper Trading:</b> Begin risk-free with virtual funds and
-            real market data. No financial stress, just pure learning.
-          </li>
-          <li>
-            <b>Personalized Trading Limits:</b> Practice at your own pace. We
-            track your returns, net profits, and success rates to build your
-            confidence for the next level.
-          </li>
-          <li>
-            <b>Interactive Learning Modules:</b> Video lessons and quizzes,
-            seamlessly integrated. Skip ahead if you’re experienced and want
-            bonus capital!
-          </li>
-          <li>
-            <b>Investment Competitions:</b> Compete using virtual currency in
-            regular competitions.
-          </li>
-          <li>
-            <b>Personal Feedback & Growth:</b> Our team communicates directly
-            with you. Exceptional performers are personally invited to Phase 2
-            for real returns.
-          </li>
-        </ul>
-      </>
+      <p>
+        Send invitations to friends, colleagues, or community members. Private
+        competitions for your specific group.
+      </p>
     ),
   },
   {
-    key: 'beta',
-    title: 'Phase 2: Beta – Real Investing, Shared Profits',
-    icon: <FaUserGraduate className='text-[#daa56a] text-3xl' />, // desktop only
+    key: 'compete',
+    title: 'Compete',
+    icon: <FaChartLine className='text-[#daa56a] text-3xl' />,
     color: '#daa56a',
     description: (
-      <>
-        <p className='mb-2'>
-          Phase 2 transitions successful Alpha participants into a rewarding
-          investing model that allows you to grow your capital alongside Cirrica
-          Capital’s resources.
-        </p>
-        <ul className='list-disc ml-5 text-[#fadabd] text-base'>
-          <li>
-            <b>Earn Bonus Capital:</b> After demonstrating success, invest small
-            amounts and we’ll match up to 50% based on your performance.{' '}
-            <span className='text-[#daa56a]'>
-              E.g. deposit $50, we match $25, total $75 invested.
-            </span>
-          </li>
-          <li>
-            <b>Your Money is Safe:</b> Your deposit stays in your own
-            sub-account. Our match mirrors your trades—your money never leaves
-            your control.
-          </li>
-          <li>
-            <b>Profit-Sharing Model:</b> Keep 100% of your profits, plus a share
-            of ours.{' '}
-            <span className='text-[#daa56a]'>
-              E.g. $50 makes 25% ($12.50), our $25 makes $6.25, you get a third
-              ($2.08) = $14.58 total profit.
-            </span>
-          </li>
-          <li>
-            <b>Increased Matching:</b> Exceptional investors with strong credit
-            can unlock up to 1:1 matching.
-          </li>
-        </ul>
-      </>
+      <p>
+        Trade with real market data in a safe, simulated environment. No real
+        money, just competition.
+      </p>
     ),
   },
   {
-    key: 'security',
-    title: 'Transparency & Security',
-    icon: <FaLock className='text-[#fadabd] text-3xl' />, // desktop only
+    key: 'manage',
+    title: 'Track',
+    icon: <FaCog className='text-[#fadabd] text-3xl' />,
     color: '#fadabd',
     description: (
-      <>
-        <p className='mb-2'>
-          Detailed records are maintained through comprehensive tracking and
-          secure brokerage arrangements. Our clear and protective usage policy
-          ensures your investments are safeguarded from unnecessary risk, and
-          your rights are always clearly outlined.
-        </p>
-      </>
+      <p>
+        Monitor performance with real-time analytics and live leaderboards.
+        Export results anytime.
+      </p>
     ),
   },
   {
-    key: 'empower',
-    title: 'Investing Made Accessible',
-    icon: <FaFlagCheckered className='text-[#daa56a] text-4xl' />, // desktop only
+    key: 'results',
+    title: 'Celebrate',
+    icon: <FaTrophy className='text-[#daa56a] text-4xl' />,
     color: '#daa56a',
     description: (
-      <>
-        <p className='mb-2'>
-          At Cirrica Capital, our goal is to empower you as an investor,
-          providing a structured pathway from learning to tangible profits.
-          Begin your journey today, and let’s grow together.
-        </p>
-      </>
+      <p>
+        Award winners with automated rankings and performance reports. You
+        handle prizes, we handle the competition.
+      </p>
     ),
   },
 ];
 
-// --- Move some cards to the left and update colors to match About Us section ---
-const leftJourneySteps = [journeySteps[3]]; // Transparency & Security
+const leftJourneySteps = [journeySteps[1], journeySteps[3]]; // Invite & Manage
 const rightJourneySteps = [
-  journeySteps[1], // Alpha
-  journeySteps[2], // Beta
-  journeySteps[4], // Empower
+  journeySteps[0], // Create
+  journeySteps[2], // Compete
+  journeySteps[4], // Results
 ];
 
 export default function HowItWorksPage() {
   return (
     <div className='relative min-h-screen w-full overflow-x-hidden font-[family-name:var(--font-geist-sans)] text-white bg-gradient-to-br from-[#050506] to-[#0a0a0c]'>
-      {/* Remove all overlays and blur for performance */}
       <FadeInSection id='how-it-works' className='text-white py-20 md:py-32'>
         <div className='relative max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-16 items-start md:items-stretch'>
           {/* Left: Title, intro, and some cards */}
@@ -168,21 +95,17 @@ export default function HowItWorksPage() {
                 {/* Unified glassy card for all intro text */}
                 <div className='w-full max-w-xl bg-[#18120a] border border-[#daa56a]/30 rounded-2xl shadow-xl px-8 py-8 flex flex-col items-start justify-center text-left ml-0'>
                   <span className='text-2xl md:text-3xl font-extrabold text-[#daa56a] drop-shadow-lg mb-2 tracking-tight text-left'>
-                    Welcome to Cirrica Capital
-                  </span>
-                  <span className='text-lg md:text-xl font-semibold text-[#fadabd] drop-shadow mb-2 text-left'>
-                    We bridge the gap between learning and successful investing.
+                    Simple. Private. Competitive.
                   </span>
                   <div className='w-16 h-1 rounded-full bg-gradient-to-r from-[#daa56a] via-[#fadabd] to-[#daa56a] opacity-80 my-3'></div>
                   <span className='text-base md:text-lg font-medium text-[#fadabd] max-w-2xl drop-shadow text-left'>
-                    Our unique two-phase program is designed to help new
-                    investors build confidence and expertise while providing an
-                    innovative way to access bonus capital and share in profits.
+                    Organize stock trading competitions. Invite your community.
+                    Trade with real data. No real money at risk.
                   </span>
                 </div>
               </div>
             </div>
-            {/* Left-side cards (About Us style) */}
+            {/* Left-side cards */}
             <div className='flex flex-col gap-6 w-full items-center'>
               {leftJourneySteps.map((step) => (
                 <div
@@ -200,19 +123,19 @@ export default function HowItWorksPage() {
                 </div>
               ))}
             </div>
-            {/* Modern CTA button, visually separated */}
+            {/* CTA button */}
             <div className='w-full flex justify-start mt-2'>
               <button
                 className='bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-[#18120a] font-extrabold px-10 py-5 rounded-md shadow-xl text-xl md:text-2xl hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-[#daa56a] transition-all duration-300 border-0 focus:outline-none focus:ring-4 focus:ring-[#daa56a]/40 mt-4 text-left cursor-pointer'
                 onClick={() => (window.location.href = '/signup')}
               >
-                Start Your Cirrica Journey
+                Get Started
               </button>
             </div>
           </div>
           {/* Right: Timeline with remaining cards */}
           <div className='flex-1 flex flex-col items-center w-full'>
-            <ExplorationMap steps={rightJourneySteps} noIcons />
+            <ExplorationMap steps={rightJourneySteps} />
           </div>
         </div>
       </FadeInSection>
@@ -222,7 +145,6 @@ export default function HowItWorksPage() {
 
 // --- ExplorationMap component ---
 function ExplorationMap({ steps }) {
-  // Remove all animation and state for performance
   return (
     <div className='relative w-full flex flex-col items-center py-8'>
       <svg
@@ -253,7 +175,7 @@ function ExplorationMap({ steps }) {
             className='relative flex w-full items-center justify-center mb-12 last:mb-0'
           >
             {/* Icon for desktop only */}
-            <div className='flex flex-col items-center mr-10 hidden md:flex'>
+            <div className='flex-col items-center mr-10 hidden md:flex'>
               <div
                 className='relative rounded-full bg-gradient-to-br from-[#18120a] to-[#232228] border-4 flex items-center justify-center shadow-[0_4px_32px_0_rgba(218,165,106,0.18)] border-[#daa56a]'
                 style={{

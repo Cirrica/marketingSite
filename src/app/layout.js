@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'Cirrica Capital',
-  description: 'Revolutionizing accessibility to investing.',
+  title: 'Cirrica Paper - Private Stock Trading Competitions',
+  description:
+    'Organize private stock trading competitions with friends and community members. Real market data, simulated trading, transparent platform fee.',
 };
 
 export default function RootLayout({ children }) {

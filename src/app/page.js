@@ -146,8 +146,8 @@ export default function Home() {
       setIsSharing(true);
       try {
         await navigator.share({
-          title: 'Cirrica',
-          text: 'Check out Cirrica',
+          title: 'Cirrica Paper',
+          text: 'Check out Cirrica Paper - organize private stock trading competitions',
           url: window.location.href,
         });
       } catch (e) {
@@ -181,7 +181,7 @@ export default function Home() {
           name: contactForm.name,
           email: contactForm.email,
           message: contactForm.message,
-          subject: 'New Submission from Cirrica',
+          subject: 'New Submission from Cirrica Paper',
           botcheck: '',
         }),
       });

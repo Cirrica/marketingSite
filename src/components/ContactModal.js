@@ -40,7 +40,7 @@ export default function ContactModal({
             <input
               type='hidden'
               name='subject'
-              value='New Submission from Cirrica'
+              value='New Submission from Cirrica Paper'
             />
             <input
               type='text'
