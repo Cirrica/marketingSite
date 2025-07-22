@@ -37,13 +37,13 @@ export default function OnboardingPage() {
             No user data found. Please sign up or sign in.
           </p>
           <div className='space-x-4'>
-            <Link 
+            <Link
               href='/signup'
               className='bg-gradient-to-r from-[#daa56a] to-[#fadabd] text-[#18120a] font-bold px-6 py-3 rounded-lg hover:opacity-90 transition'
             >
               Sign Up
             </Link>
-            <Link 
+            <Link
               href='/signin'
               className='border border-[#daa56a] text-[#daa56a] font-bold px-6 py-3 rounded-lg hover:bg-[#daa56a] hover:text-[#18120a] transition'
             >
@@ -66,7 +66,8 @@ export default function OnboardingPage() {
         </p>
         <div className='w-16 h-1 rounded-full bg-gradient-to-r from-[#daa56a] via-[#fadabd] to-[#daa56a] opacity-80 mx-auto my-4'></div>
         <p className='text-base md:text-lg text-[#fadabd] mb-6'>
-          You can now create private stock trading competitions and invite your friends, colleagues, or community members to participate.
+          You can now create private stock trading competitions and invite your
+          friends, colleagues, or community members to participate.
         </p>
         <p className='text-[#daa56a] font-semibold mb-6'>
           Ready to organize your first tournament?
@@ -78,12 +79,16 @@ export default function OnboardingPage() {
           >
             Learn How It Works
           </Link>
-          <Link
-            href='/'
-            className='block border border-[#daa56a] text-[#daa56a] font-bold py-3 px-6 rounded-lg hover:bg-[#daa56a] hover:text-[#18120a] transition'
+          <button
+            onClick={() => {
+              const token = localStorage.getItem('cirricaToken');
+              const paperUrl = process.env.NEXT_PUBLIC_PAPER_URL;
+              window.location.href = `${paperUrl}/loginFromToken?token=${token}`;
+            }}
+            className='block w-full border border-[#daa56a] text-[#daa56a] font-bold py-3 px-6 rounded-lg hover:bg-[#daa56a] hover:text-[#18120a] transition'
           >
             Go to Dashboard
-          </Link>
+          </button>
         </div>
       </div>
     </div>
