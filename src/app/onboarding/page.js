@@ -82,8 +82,7 @@ export default function OnboardingPage() {
           <button
             onClick={() => {
               const token = localStorage.getItem('cirricaToken');
-              const paperUrl =
-                process.env.NEXT_PUBLIC_PAPER_URL || 'http://localhost:3000';
+              const paperUrl = process.env.NEXT_PUBLIC_PAPER_URL;
               window.location.href = `${paperUrl}/loginFromToken?token=${token}`;
             }}
             className='block w-full border border-[#daa56a] text-[#daa56a] font-bold py-3 px-6 rounded-lg hover:bg-[#daa56a] hover:text-[#18120a] transition'
